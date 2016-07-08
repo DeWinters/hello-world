@@ -1,0 +1,10 @@
+
+body{
+margin: 0px;
+}
+
+#frame {							/* Outside Frame */
+width: 968px;
+margin: 10px auto;
+background-color: #fff;
+}
