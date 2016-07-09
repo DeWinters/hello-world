@@ -54,7 +54,7 @@ public class HelloController {
 
 
     @RequestMapping(value="/confirmation",method = RequestMethod.POST)              /** Working as intended */
-    public String calculate(ModelMap model,@RequestParam("name") String username,@RequestParam("password") String password,@RequestParam("age") String age) {
+    public String calculate(ModelMap model,@RequestParam("username") String username,@RequestParam("password") String password,@RequestParam("age") String age) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
         jdbcTemplate.update("INSERT INTO USERS(username,password,age) VALUES(?,?,?)",username,password,age);
         model.addAttribute("username", username);
