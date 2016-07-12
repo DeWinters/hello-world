@@ -34,9 +34,14 @@
             <input type="submit" value="Add them">
         </form>
 
-        <form action="/newPage" method="post">
+        <form action="/memberList" method="post">
             <br>
             <input type="submit" value="Skip">
+        </form>
+
+        <form action="/shelves" method="post">
+            <br>
+            <input type="submit" value="Shelves">
         </form>
     </div>
 </body>
