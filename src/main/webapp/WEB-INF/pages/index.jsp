@@ -3,7 +3,7 @@
 <html>
     <head>
         <title>MainPage</title>
-        	<link type="text/css" rel="stylesheet" href="styles.xsl">
+        	<link type="text/css" rel="stylesheet" href="/css/styles.css">
     </head>
 
 <body>

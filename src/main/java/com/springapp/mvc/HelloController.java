@@ -1,5 +1,6 @@
 package com.springapp.mvc;
 
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -21,13 +24,22 @@ public class HelloController {
     String confirm ="";
     long hack = 0;                                                                  // this will be made clear
 
-	@RequestMapping(value="/",method = RequestMethod.GET)                           /** Working as intended */
-	public String printWelcome(ModelMap model) {
+    @RequestMapping(value="/",method = RequestMethod.GET)                           /** Working as intended */
+    public String printWelcome(ModelMap model,HttpServletRequest request) {
         //JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
-		model.addAttribute("greeting", "Enter New Member details");
+        HttpSession session = request.getSession(true);
+        Integer counter = (Integer)session.getAttribute("counter");
+        if(counter != null){
+            session.setAttribute("counter",counter + 1);
+        }else{
+            session.setAttribute("counter",1);
+        }
+
+        System.out.println("COUNTER VALUE:"+session.getAttribute("counter"));
+        model.addAttribute("greeting", "Enter New Member details");
         confirm = "New Member Entry";
-		return "index";
-	}
+        return "index";
+    }
 
     /***************************************** members *********************************************************/
     @RequestMapping(value="/editor",method = RequestMethod.POST)                    /** this looping construct can't be right. a single user obj would be better than a List obj */
@@ -37,23 +49,11 @@ public class HelloController {
         //jdbctemplate.query("SELECT username FROM USERS WHERE id =5", xxx);                // nope
         //xxx = jdbctemplate.query("SELECT username FROM USERS WHERE id=5");                // nope
         //User a = jdbctemplate.query("SELECT * FROM USERS WHERE ID =?", id);               // nope
-        //User b = jdbctemplate.query("SELECT * FROM USERS WHERE ID =5", new UserMapper()); // nope
 
-        List<User> allUsers = jdbctemplate.query("SELECT * FROM USERS WHERE ID =?", new UserMapper(), id);
-        String username ="";
-        String password ="";
-        int age = 0;
-
-        for (User member : allUsers){
-            if (member.getId() == id) {
-                username = member.getUsername();
-                password = member.getPassword();
-                age = member.getAge();
-            }
-        }
-        model.addAttribute("name", username);
-        model.addAttribute("pass", password);
-        model.addAttribute("age", age);
+        User member = jdbctemplate.queryForObject("SELECT * FROM USERS WHERE ID =?", new UserMapper(), id);
+        model.addAttribute("name", member.getUsername());
+        model.addAttribute("pass", member.getPassword());
+        model.addAttribute("age", member.getAge());
         model.addAttribute("id", id);
         hack = id;
         confirm = "Member Data Edit";
@@ -70,6 +70,14 @@ public class HelloController {
         return "members/confirmation";
     }
 
+    @RequestMapping(value="/json",method = RequestMethod.POST)              /** Working as intended */
+    public String json(ModelMap model,@RequestParam("json") String theJsonString) {
+        Gson gson = new Gson();
+        User user = gson.fromJson(theJsonString,User.class);
+        System.out.println(user.toString());
+        return "members/confirmation";
+    }
+
 
     @RequestMapping(value="/memberList", method = RequestMethod.POST)               /** Working as intended */
     public String listMembers(ModelMap model) {
@@ -81,15 +89,15 @@ public class HelloController {
             if (member.getAge() >=18) {
                 /** html output of adults only */
                 theLot += member.getId() + "&emsp;" +
-                          member.getUsername() + "&emsp;" +
-                          member.getPassword() + "&emsp;" +
-                          member.getAge() + "<br>";
+                        member.getUsername() + "&emsp;" +
+                        member.getPassword() + "&emsp;" +
+                        member.getAge() + "<br>";
             }
             /** console output of all members */
             System.out.println(member.getId() + "\t" +
-                               member.getUsername() + "\t" +
-                               member.getPassword() + "\t" +
-                               member.getAge());
+                    member.getUsername() + "\t" +
+                    member.getPassword() + "\t" +
+                    member.getAge());
         }
 
         /** Query solution */
@@ -186,10 +194,10 @@ public class HelloController {
         String history ="";
         for(Sale sale : allSales){
             history += sale.getInvoice() +" "+
-                       sale.getDate() +" "+
-                       sale.getMemberId() +" "+
-                       sale.getItemId() +" "+
-                       sale.getPrice() +"<br>";
+                    sale.getDate() +" "+
+                    sale.getMemberId() +" "+
+                    sale.getItemId() +" "+
+                    sale.getPrice() +"<br>";
         }
         model.addAttribute("history", history);
         return "salesLog";
@@ -205,8 +213,8 @@ public class HelloController {
         /** Make a conditional statement to determine which cell to ue as search criteria **/
         for(Item match : result){
             nameMatches += match.getItemId() +" "+
-                           match.getItemName() +" "+
-                           match.getItemPrice() +"<br>";
+                    match.getItemName() +" "+
+                    match.getItemPrice() +"<br>";
         }
         model.addAttribute("results", nameMatches);
         return "items/findItem";
