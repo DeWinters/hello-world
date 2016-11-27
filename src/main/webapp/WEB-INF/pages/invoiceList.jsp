@@ -1,9 +1,9 @@
 <html>
 <head>
-    <title>MemberList Outputs</title>
+    <title>Invoice List</title>
 </head>
 <body>
-    <h1>Membership List:</h1>
+    <h1>Invoice List:</h1>
 
     Java solution: <br>
     ${roleCall}
@@ -17,12 +17,6 @@
 
     Property of ${owner}, 2016
     <br><br><br>
-
-
-        <forEach item=${allUsers} var="member">
-        ${allUsers} <br>
-        </forEach>
-
 
 </body>
 </html>

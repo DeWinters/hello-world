@@ -17,7 +17,7 @@
             <form action="/confirmation" method="post">
                 <h3>Old</h3>
                 <input type="text" name="invoiceName" > :First name <br>
-                <input type="text" name="password" > :Last name <br>
+                <input type="text" name="invoiceLast" > :Last name <br>
                 <input type="text" name="age"> :Age <br>
 
                 <h2>MAS Transit</h2>
@@ -156,7 +156,7 @@
                 <input type="reset">
             </form>
         </div>
-        <form action="/memberList" method="post">
+        <form action="/invoiceList" method="post">
             <br>
             <input type="submit" value="Show List">
         </form>

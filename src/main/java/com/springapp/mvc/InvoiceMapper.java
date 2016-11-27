@@ -12,7 +12,7 @@ public class InvoiceMapper implements ParameterizedRowMapper<Invoice> {
     public Invoice mapRow(ResultSet resultSet, int i) throws SQLException {
         Invoice invoice = new Invoice();
         invoice.setId(resultSet.getLong("id"));
-        invoice.setInvoiceName(resultSet.getString("invoicename"));
+        invoice.setInvoiceName(resultSet.getString("username"));
         invoice.setPassword(resultSet.getString("password"));
         invoice.setAge(resultSet.getInt("age"));
 

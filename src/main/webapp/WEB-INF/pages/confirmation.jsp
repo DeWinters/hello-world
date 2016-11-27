@@ -7,10 +7,5 @@
 
         <h1>Thanks, your ${procedure} was successful. </h1>
 
-        <form action="" method="post">
-            <br>
-            <input type="submit" value="Skip">
-        </form>
-
     </body>
 </html>

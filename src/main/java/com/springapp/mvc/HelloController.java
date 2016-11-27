@@ -24,7 +24,6 @@ public class HelloController {
     long hack = 0;                                                                  // this will be made clear
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    /** Working as intended */
     public String printWelcome(ModelMap model, HttpServletRequest request) {
         //JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
         HttpSession session = request.getSession(true);
@@ -42,27 +41,18 @@ public class HelloController {
     }
 
     /***************************************** members *********************************************************/
-    @RequestMapping(value = "/editor", method = RequestMethod.POST)
-    /** this looping construct can't be right. a single user obj would be better than a List obj */
-    public String editMember(ModelMap model, @RequestParam("editId") long id) {
-        JdbcTemplate jdbctemplate = new JdbcTemplate(dataSauce);
-        return "members/editor";
-    }
-
 
     @RequestMapping(value = "/confirmation", method = RequestMethod.POST)
-    /** Currently adding fields */
-    public String calculate(ModelMap model, @RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("age") int age, @RequestParam("invoice_num") String invoice_num, @RequestParam("client") String client, @RequestParam("driver") String driver, @RequestParam("origin") String origin, @RequestParam("destination") String destination, @RequestParam("retour") Boolean retour, @RequestParam("wknd") Boolean wknd, @RequestParam("human") Boolean human, @RequestParam("prise") Boolean prise, @RequestParam("interne") Boolean interne, @RequestParam("urgence") Boolean urgence, @RequestParam("abusive") Boolean abusive) {
+    public String calculate(ModelMap model, @RequestParam("invoiceName") String username, @RequestParam("invoiceLast") String lastName, @RequestParam("age") int age, @RequestParam("invoice_num") String invoice_num, @RequestParam("client") String client, @RequestParam("driver") String driver, @RequestParam("origin") String origin, @RequestParam("destination") String destination, @RequestParam("retour") Boolean retour, @RequestParam("wknd") Boolean wknd, @RequestParam("human") Boolean human, @RequestParam("prise") Boolean prise, @RequestParam("interne") Boolean interne, @RequestParam("urgence") Boolean urgence, @RequestParam("abusive") Boolean abusive) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
-        jdbcTemplate.update("INSERT INTO invoice(username,password,age,invoice_num,client,driver,origin,destination,retour,wknd,human,prise,interne,urgence,abusive) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", username, password, age, invoice_num, client, driver, origin, destination, retour, wknd, human, prise, interne, urgence, abusive);
+        jdbcTemplate.update("INSERT INTO invoice(username,password,age,invoice_num,client,driver,origin,destination,retour,wknd,human,prise,interne,urgence,abusive) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", username, lastName, age, invoice_num, client, driver, origin, destination, retour, wknd, human, prise, interne, urgence, abusive);
         model.addAttribute("username", username);
         model.addAttribute("procedure", confirm);
-        return "members/confirmation";
+        return "confirmation";
     }
 
 
     @RequestMapping(value = "/invoiceList", method = RequestMethod.POST)
-    /** Working as intended */
     public String listMembers(ModelMap model) {
         /** Java solution */
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
@@ -107,7 +97,7 @@ public class HelloController {
 
         /** Query solution */
         JdbcTemplate jdbcT = new JdbcTemplate(dataSauce);
-        List<Invoice> adults = jdbcT.query("SELECT * FROM USERS WHERE age >= 18", new InvoiceMapper());
+        List<Invoice> adults = jdbcT.query("SELECT * FROM invoice WHERE age >= 18", new InvoiceMapper());
         int troops = 0;
         String justAdults = "";
         for (Invoice adult : adults) {
@@ -149,26 +139,7 @@ public class HelloController {
         model.addAttribute("roleCall", theLot);                 // works: Java solution to age data restriction
         model.addAttribute("theDraft", justAdults);             // works: Query solution to age data restriction
         model.addAttribute("eligible", troops);                 // works: counts total adults
-        return "members/memberList";
+        return "invoiceList";
     }
 
-
-    @RequestMapping(value = "/changed", method = RequestMethod.POST)
-    /** Working... */
-    public String editMember(ModelMap model, @RequestParam("newName") String username, @RequestParam("newPass") String password, @RequestParam("newAge") String age) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
-        jdbcTemplate.update("UPDATE USERS SET username =?, password =?, age =? WHERE id =?", username, password, age, hack);
-        model.addAttribute("procedure", confirm);
-        return "members/changed";
-    }
-
-
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    /** Working... */
-    public String deleteMember(ModelMap model) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
-        jdbcTemplate.update("DELETE FROM USERS WHERE ID =?", hack);
-        model.addAttribute("procedure", "Delete Member Record");
-        return "members/changed";
-    }
 }

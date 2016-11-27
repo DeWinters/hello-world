@@ -106,7 +106,7 @@ public class Invoice {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Invoice{" +
                 "id=" + id +
                 ", invoiceName='" + invoiceName + '\'' +
                 ", password='" + password + '\'' +
