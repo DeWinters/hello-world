@@ -1,10 +1,12 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" %>
 
 <html>
     <head>
         <title>MainPage</title>
         <link href="${pageContext.request.contextPath}/resources/styles.css" rel="stylesheet" type="text/css">
-        <link href="<spring:url value="/resources/styles.css" />" rel="stylesheet">
+        <link href="<'/resources/styles.css' rel="stylesheet">
         <link type="text/css" rel="stylesheet" href="/styles.css">
 
     </head>
