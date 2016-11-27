@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Verified!</title>
+        <link rel="stylesheet" type="text/css" href="resources/styles.css"/>
     </head>
     <body>
 

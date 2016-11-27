@@ -1,6 +1,7 @@
 <html>
 <head>
     <title>Invoice List</title>
+    <link rel="stylesheet" type="text/css" href="resources/styles.css"/>
 </head>
 <body>
     <h1>Invoice List:</h1>

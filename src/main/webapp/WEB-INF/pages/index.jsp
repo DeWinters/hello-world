@@ -4,8 +4,8 @@
 
 <html>
     <head>
-        <title>MainPage</title>
-        <link rel="stylesheet" type="text/css" href="/resources/styles.css"/>
+        <title>LoginPage</title>
+        <link rel="stylesheet" type="text/css" href="resources/styles.css"/>
 
     </head>
 
