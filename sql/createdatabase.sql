@@ -2,7 +2,7 @@ CREATE SCHEMA funwithspring;
 
 CREATE TABLE funwithspring.users (
   id INT NOT NULL AUTO_INCREMENT,
-  username VARCHAR(45) NULL,
+  invoiceName VARCHAR(45) NULL,
   password VARCHAR(45) NULL,
   age INT NULL,
   //invoice_num TEXT(11),

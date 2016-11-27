@@ -1,6 +1,5 @@
 package com.springapp.mvc;
 
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Date;
 
 @Controller
 public class HelloController {
@@ -22,75 +20,59 @@ public class HelloController {
     private DriverManagerDataSource dataSauce;
 
     String owner = "TheStudentProgrammer";
-    String confirm ="";
+    String confirm = "";
     long hack = 0;                                                                  // this will be made clear
 
-    @RequestMapping(value="/",method = RequestMethod.GET)                           /** Working as intended */
-    public String printWelcome(ModelMap model,HttpServletRequest request) {
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    /** Working as intended */
+    public String printWelcome(ModelMap model, HttpServletRequest request) {
         //JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
         HttpSession session = request.getSession(true);
-        Integer counter = (Integer)session.getAttribute("counter");
-        if(counter != null){
-            session.setAttribute("counter",counter + 1);
-        }else{
-            session.setAttribute("counter",1);
+        Integer counter = (Integer) session.getAttribute("counter");
+        if (counter != null) {
+            session.setAttribute("counter", counter + 1);
+        } else {
+            session.setAttribute("counter", 1);
         }
 
-        System.out.println("COUNTER VALUE:"+session.getAttribute("counter"));
+        System.out.println("COUNTER VALUE:" + session.getAttribute("counter"));
         model.addAttribute("greeting", "Enter New Member details");
         confirm = "New Member Entry";
         return "index";
     }
 
     /***************************************** members *********************************************************/
-    @RequestMapping(value="/editor",method = RequestMethod.POST)                    /** this looping construct can't be right. a single user obj would be better than a List obj */
-    public String editMember(ModelMap model,@RequestParam("editId") long id){
+    @RequestMapping(value = "/editor", method = RequestMethod.POST)
+    /** this looping construct can't be right. a single user obj would be better than a List obj */
+    public String editMember(ModelMap model, @RequestParam("editId") long id) {
         JdbcTemplate jdbctemplate = new JdbcTemplate(dataSauce);
-        //String xxx="";
-        //jdbctemplate.query("SELECT username FROM USERS WHERE id =5", xxx);                // nope
-        //xxx = jdbctemplate.query("SELECT username FROM USERS WHERE id=5");                // nope
-        //User a = jdbctemplate.query("SELECT * FROM USERS WHERE ID =?", id);               // nope
-
-        User member = jdbctemplate.queryForObject("SELECT * FROM USERS WHERE ID =?", new UserMapper(), id);
-        model.addAttribute("name", member.getUsername());
-        model.addAttribute("pass", member.getPassword());
-        model.addAttribute("age", member.getAge());
-        model.addAttribute("id", id);
-        hack = id;
-        confirm = "Member Data Edit";
         return "members/editor";
     }
 
 
-    @RequestMapping(value="/confirmation",method = RequestMethod.POST)              /** Currently adding fields */
-    public String calculate(ModelMap model,@RequestParam("username") String username,@RequestParam("password") String password,@RequestParam("age") int age,@RequestParam("invoice_num") String invoice_num,@RequestParam("client") String client,@RequestParam("driver") String driver,@RequestParam("origin") String origin,@RequestParam("destination") String destination,@RequestParam("retour") Boolean retour,@RequestParam("wknd") Boolean wknd,@RequestParam("human") Boolean human,@RequestParam("prise") Boolean prise,@RequestParam("interne") Boolean interne,@RequestParam("urgence") Boolean urgence,@RequestParam("abusive") Boolean abusive) {
+    @RequestMapping(value = "/confirmation", method = RequestMethod.POST)
+    /** Currently adding fields */
+    public String calculate(ModelMap model, @RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("age") int age, @RequestParam("invoice_num") String invoice_num, @RequestParam("client") String client, @RequestParam("driver") String driver, @RequestParam("origin") String origin, @RequestParam("destination") String destination, @RequestParam("retour") Boolean retour, @RequestParam("wknd") Boolean wknd, @RequestParam("human") Boolean human, @RequestParam("prise") Boolean prise, @RequestParam("interne") Boolean interne, @RequestParam("urgence") Boolean urgence, @RequestParam("abusive") Boolean abusive) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
-        jdbcTemplate.update("INSERT INTO USERS(username,password,age,invoice_num,client,driver,origin,destination,retour,wknd,human,prise,interne,urgence,abusive) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",username,password,age,invoice_num,client,driver,origin,destination,retour,wknd,human,prise,interne,urgence,abusive);
+        jdbcTemplate.update("INSERT INTO invoice(username,password,age,invoice_num,client,driver,origin,destination,retour,wknd,human,prise,interne,urgence,abusive) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", username, password, age, invoice_num, client, driver, origin, destination, retour, wknd, human, prise, interne, urgence, abusive);
         model.addAttribute("username", username);
         model.addAttribute("procedure", confirm);
         return "members/confirmation";
     }
 
-    @RequestMapping(value="/json",method = RequestMethod.POST)                      /** Working as intended */
-    public String json(ModelMap model,@RequestParam("json") String theJsonString) {
-        Gson gson = new Gson();
-        User user = gson.fromJson(theJsonString,User.class);
-        System.out.println(user.toString());
-        return "members/confirmation";
-    }
 
-
-    @RequestMapping(value="/memberList", method = RequestMethod.POST)               /** Working as intended */
+    @RequestMapping(value = "/invoiceList", method = RequestMethod.POST)
+    /** Working as intended */
     public String listMembers(ModelMap model) {
         /** Java solution */
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
-        List<User> allUsers = jdbcTemplate.query("SELECT * FROM USERS", new UserMapper());
-        String theLot ="";
-        for (User member : allUsers) {
-            if (member.getAge() >=18) {
+        List<Invoice> allInvoices = jdbcTemplate.query("SELECT * FROM invoice", new InvoiceMapper());
+        String theLot = "";
+        for (Invoice member : allInvoices) {
+            if (member.getAge() >= 18) {
                 /** html output of adults only */
                 theLot += member.getId() + "&emsp;" +
-                        member.getUsername() + "&emsp;" +
+                        member.getInvoiceName() + "&emsp;" +
                         member.getPassword() + "&emsp;" +
                         member.getAge() + "&emsp;" +
                         member.getInvoiceNum() + "&emsp;" +
@@ -107,7 +89,7 @@ public class HelloController {
             }
             /** console output of all members */
             System.out.println(member.getId() + "\t" +
-                    member.getUsername() + "\t" +
+                    member.getInvoiceName() + "\t" +
                     member.getPassword() + "\t" +
                     member.getAge() + "\t" +
                     member.getInvoiceNum() + "\t" +
@@ -125,20 +107,20 @@ public class HelloController {
 
         /** Query solution */
         JdbcTemplate jdbcT = new JdbcTemplate(dataSauce);
-        List<User> adults = jdbcT.query("SELECT * FROM USERS WHERE age >= 18", new UserMapper());
+        List<Invoice> adults = jdbcT.query("SELECT * FROM USERS WHERE age >= 18", new InvoiceMapper());
         int troops = 0;
-        String justAdults ="";
-        for (User adult : adults){
-            troops +=1;
+        String justAdults = "";
+        for (Invoice adult : adults) {
+            troops += 1;
             /** html output of adults */
             justAdults += adult.getId() + "&emsp;" +
-                    adult.getUsername() + "&emsp;" +
+                    adult.getInvoiceName() + "&emsp;" +
                     adult.getPassword() + "&emsp;" +
                     adult.getAge() + "&emsp;" +
                     adult.getOrigin() + "&emsp;" +
                     adult.getClient() + "&emsp;" +
                     adult.getDriver() + "&emsp;" +
-                    adult.getDestination() +"&emsp;" +
+                    adult.getDestination() + "&emsp;" +
                     adult.getRetour() + "&emsp;" +
                     adult.getInterne() + "&emsp;" +
                     adult.getUrgence() + "&emsp;" +
@@ -147,7 +129,7 @@ public class HelloController {
 
             /** console output of adults */
             System.out.println(adult.getId() + "\t" +
-                    adult.getUsername() + "\t" +
+                    adult.getInvoiceName() + "\t" +
                     adult.getPassword() + "\t" +
                     adult.getAge() + "\t" +
                     adult.getOrigin() + "\t" +
@@ -161,8 +143,8 @@ public class HelloController {
         }
 
 
-        System.out.println(allUsers.iterator());                // failed:seems to find address of table instead of contents of table elements
-        model.addAttribute("userCount", allUsers.size());       // works: posts the total number of table entries
+        System.out.println(allInvoices.iterator());                // failed:seems to find address of table instead of contents of table elements
+        model.addAttribute("userCount", allInvoices.size());       // works: posts the total number of table entries
         model.addAttribute("owner", owner);                     // works: posts a string to the page
         model.addAttribute("roleCall", theLot);                 // works: Java solution to age data restriction
         model.addAttribute("theDraft", justAdults);             // works: Query solution to age data restriction
@@ -171,8 +153,9 @@ public class HelloController {
     }
 
 
-    @RequestMapping(value="/changed", method = RequestMethod.POST)                  /** Working... */
-    public String editMember(ModelMap model, @RequestParam("newName") String username, @RequestParam("newPass") String password, @RequestParam("newAge") String age){
+    @RequestMapping(value = "/changed", method = RequestMethod.POST)
+    /** Working... */
+    public String editMember(ModelMap model, @RequestParam("newName") String username, @RequestParam("newPass") String password, @RequestParam("newAge") String age) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
         jdbcTemplate.update("UPDATE USERS SET username =?, password =?, age =? WHERE id =?", username, password, age, hack);
         model.addAttribute("procedure", confirm);
@@ -180,93 +163,12 @@ public class HelloController {
     }
 
 
-    @RequestMapping(value="/delete", method = RequestMethod.POST)                   /** Working... */
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    /** Working... */
     public String deleteMember(ModelMap model) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
         jdbcTemplate.update("DELETE FROM USERS WHERE ID =?", hack);
         model.addAttribute("procedure", "Delete Member Record");
         return "members/changed";
-    }
-
-    /***************************************** items ************************************************************/
-    @RequestMapping(value="/shelves", method = RequestMethod.POST)                  /** Working as intended */
-    public String shelf(ModelMap model) {
-        String allStock ="";
-        JdbcTemplate jdbcT = new JdbcTemplate(dataSauce);
-        List<Item> itemList = jdbcT.query("SELECT * FROM STOCK", new ItemMapper());
-        for(Item item : itemList){
-            allStock += item.getItemId() +" ";
-            allStock += item.getItemName() +" ";
-            allStock += item.getItemPrice() +"<br>";
-        }
-        model.addAttribute("stockList", allStock);
-        return "items/shelves";
-    }
-
-
-    @RequestMapping(value="/addItem", method = RequestMethod.POST)                  /** Working as intended */
-    public String newItem(ModelMap model, @RequestParam("itemId") String id, @RequestParam("itemName") String name, @RequestParam("itemPrice") float price){
-        JdbcTemplate jdbcTemp = new JdbcTemplate(dataSauce);
-        jdbcTemp.update("INSERT INTO STOCK(itemId,itemName,itemPrice) VALUES(?,?,?)", id, name, price);
-        model.addAttribute("id", id);
-        model.addAttribute("name", name);
-        model.addAttribute("price", price);
-        return "items/addItem";
-    }
-
-
-    @RequestMapping(value="/sellItem", method = RequestMethod.POST)                 /** Working: add more user feedback */
-    public String sellItem(ModelMap model, @RequestParam("itemId") String itemId, @RequestParam("memberId") long memberId){
-        JdbcTemplate jdbcT = new JdbcTemplate(dataSauce);
-        jdbcT.update("INSERT INTO SALES(memberId,itemId,price,date) VALUES(?,?,?,?)", memberId, itemId, 19.95, "fakeDate");
-        model.addAttribute("memberId", memberId);
-        model.addAttribute("itemId", itemId);
-
-        jdbcT.update("DELETE FROM STOCK WHERE itemId =?", itemId);
-        return "items/sellItem";
-    }
-
-
-    @RequestMapping(value="/salesLog", method = RequestMethod.POST)                 /* Build sale class and saleMapper */
-    public String allSales(ModelMap model){
-        JdbcTemplate jdbcT = new JdbcTemplate(dataSauce);
-        List<Sale> allSales = jdbcT.query("SELECT * FROM SALES", new SaleMapper());
-        String history ="";
-        for(Sale sale : allSales){
-            history += sale.getInvoice() +" "+
-                    sale.getDate() +" "+
-                    sale.getMemberId() +" "+
-                    sale.getItemId() +" "+
-                    sale.getPrice() +"<br>";
-        }
-        model.addAttribute("history", history);
-        return "salesLog";
-    }
-
-
-    @RequestMapping(value="/findItem", method = RequestMethod.POST)                 /** process item search: partially working: add search conditions */
-    public String searchItem(ModelMap model, @RequestParam("findId") String id, @RequestParam("findName") String name, @RequestParam("maxPrice") float max){
-        JdbcTemplate jdbcT = new JdbcTemplate(dataSauce);
-        List<Item> result = jdbcT.query("SELECT * FROM STOCK WHERE itemName =?", new ItemMapper(), name);
-        String nameMatches ="";
-
-        /** Make a conditional statement to determine which cell to ue as search criteria **/
-        for(Item match : result){
-            nameMatches += match.getItemId() +" "+
-                    match.getItemName() +" "+
-                    match.getItemPrice() +"<br>";
-        }
-        model.addAttribute("results", nameMatches);
-        return "items/findItem";
-    }
-
-
-    /***************************************** math *************************************************************/
-    @RequestMapping(value="/addIt", method = RequestMethod.POST)                    /** Working as intended */
-    public String addStuff(ModelMap model,@RequestParam("cell1") float cell1, @RequestParam("cell2") float cell2){
-        float answer = cell1 + cell2;
-        System.out.println(answer);
-        model.addAttribute("result", answer);
-        return "addMachine";
     }
 }
