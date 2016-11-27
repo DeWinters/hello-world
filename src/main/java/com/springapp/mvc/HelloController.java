@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Date;
 
 @Controller
 public class HelloController {
@@ -61,16 +62,16 @@ public class HelloController {
     }
 
 
-    @RequestMapping(value="/confirmation",method = RequestMethod.POST)              /** Working as intended */
-    public String calculate(ModelMap model,@RequestParam("username") String username,@RequestParam("password") String password,@RequestParam("age") int age) {
+    @RequestMapping(value="/confirmation",method = RequestMethod.POST)              /** Currently adding fields */
+    public String calculate(ModelMap model,@RequestParam("username") String username,@RequestParam("password") String password,@RequestParam("age") int age,@RequestParam("invoice_num") String invoice_num,@RequestParam("client") String client,@RequestParam("driver") String driver,@RequestParam("origin") String origin,@RequestParam("destination") String destination,@RequestParam("retour") Boolean retour,@RequestParam("wknd") Boolean wknd,@RequestParam("human") Boolean human,@RequestParam("prise") Boolean prise,@RequestParam("interne") Boolean interne,@RequestParam("urgence") Boolean urgence,@RequestParam("abusive") Boolean abusive) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
-        jdbcTemplate.update("INSERT INTO USERS(username,password,age) VALUES(?,?,?)",username,password,age);
+        jdbcTemplate.update("INSERT INTO USERS(username,password,age,invoice_num,client,driver,origin,destination,retour,wknd,human,prise,interne,urgence,abusive) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",username,password,age,invoice_num,client,driver,origin,destination,retour,wknd,human,prise,interne,urgence,abusive);
         model.addAttribute("username", username);
         model.addAttribute("procedure", confirm);
         return "members/confirmation";
     }
 
-    @RequestMapping(value="/json",method = RequestMethod.POST)              /** Working as intended */
+    @RequestMapping(value="/json",method = RequestMethod.POST)                      /** Working as intended */
     public String json(ModelMap model,@RequestParam("json") String theJsonString) {
         Gson gson = new Gson();
         User user = gson.fromJson(theJsonString,User.class);
@@ -91,13 +92,35 @@ public class HelloController {
                 theLot += member.getId() + "&emsp;" +
                         member.getUsername() + "&emsp;" +
                         member.getPassword() + "&emsp;" +
-                        member.getAge() + "<br>";
+                        member.getAge() + "&emsp;" +
+                        member.getInvoiceNum() + "&emsp;" +
+                        member.getClient() + "&emsp;" +
+                        member.getOrigin() + "&emsp;" +
+                        member.getDestination() + "&emsp;" +
+                        member.getRetour() + "&emsp;" +
+                        member.getWknd() + "&emsp;" +
+                        member.getHuman() + "&emsp;" +
+                        member.getPrise() + "&emsp;" +
+                        member.getInterne() + "&emsp;" +
+                        member.getUrgence() + "&emsp;" +
+                        member.getAbusive() + "<br>";
             }
             /** console output of all members */
             System.out.println(member.getId() + "\t" +
                     member.getUsername() + "\t" +
                     member.getPassword() + "\t" +
-                    member.getAge());
+                    member.getAge() + "\t" +
+                    member.getInvoiceNum() + "\t" +
+                    member.getClient() + "\t" +
+                    member.getOrigin() + "\t" +
+                    member.getDestination() + "\t" +
+                    member.getRetour() + "\t" +
+                    member.getWknd() + "\t" +
+                    member.getHuman() + "\t" +
+                    member.getPrise() + "\t" +
+                    member.getInterne() + "\t" +
+                    member.getUrgence() + "\t" +
+                    member.getAbusive());
         }
 
         /** Query solution */
@@ -111,13 +134,30 @@ public class HelloController {
             justAdults += adult.getId() + "&emsp;" +
                     adult.getUsername() + "&emsp;" +
                     adult.getPassword() + "&emsp;" +
-                    adult.getAge() + "<br>";
+                    adult.getAge() + "&emsp;" +
+                    adult.getOrigin() + "&emsp;" +
+                    adult.getClient() + "&emsp;" +
+                    adult.getDriver() + "&emsp;" +
+                    adult.getDestination() +"&emsp;" +
+                    adult.getRetour() + "&emsp;" +
+                    adult.getInterne() + "&emsp;" +
+                    adult.getUrgence() + "&emsp;" +
+                    adult.getAbusive() + "&emsp;" +
+                    "<br>";
 
             /** console output of adults */
             System.out.println(adult.getId() + "\t" +
                     adult.getUsername() + "\t" +
                     adult.getPassword() + "\t" +
-                    adult.getAge());
+                    adult.getAge() + "\t" +
+                    adult.getOrigin() + "\t" +
+                    adult.getDestination() + "\t" +
+                    adult.getClient() + "\t" +
+                    adult.getDriver() + "\t" +
+                    adult.getRetour() + "\t" +
+                    adult.getInterne() + "\t" +
+                    adult.getUrgence() + "\t" +
+                    adult.getAbusive());
         }
 
 

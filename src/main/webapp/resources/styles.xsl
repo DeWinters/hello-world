@@ -6,6 +6,7 @@
     width: 968px;
     margin: 10px auto;
     background-color: #fff;
+
     }
 
 </xsl:stylesheet>
