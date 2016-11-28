@@ -43,10 +43,10 @@ public class HelloController {
     /***************************************** members *********************************************************/
 
     @RequestMapping(value = "/confirmation", method = RequestMethod.POST)
-    public String calculate(ModelMap model, @RequestParam("invoiceName") String username, @RequestParam("invoiceLast") String lastName, @RequestParam("age") int age, @RequestParam("invoice_num") String invoice_num, @RequestParam("client") String client, @RequestParam("driver") String driver, @RequestParam("origin") String origin, @RequestParam("destination") String destination, @RequestParam("retour") Boolean retour, @RequestParam("wknd") Boolean wknd, @RequestParam("human") Boolean human, @RequestParam("prise") Boolean prise, @RequestParam("interne") Boolean interne, @RequestParam("urgence") Boolean urgence, @RequestParam("abusive") Boolean abusive) {
+    public String calculate(ModelMap model, @RequestParam("invoice_num") String invoice_num, @RequestParam("client") String client, @RequestParam("driver") String driver, @RequestParam("origin") String origin, @RequestParam("destination") String destination, @RequestParam("retour") Boolean retour, @RequestParam("wknd") Boolean wknd, @RequestParam("human") Boolean human, @RequestParam("prise") Boolean prise, @RequestParam("interne") Boolean interne, @RequestParam("urgence") Boolean urgence, @RequestParam("abusive") Boolean abusive) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
-        jdbcTemplate.update("INSERT INTO invoice(username,password,age,invoice_num,client,driver,origin,destination,retour,wknd,human,prise,interne,urgence,abusive) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", username, lastName, age, invoice_num, client, driver, origin, destination, retour, wknd, human, prise, interne, urgence, abusive);
-        model.addAttribute("username", username);
+        jdbcTemplate.update("INSERT INTO invoice(invoice_num,client,driver,origin,destination,retour,wknd,human,prise,interne,urgence,abusive) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)", invoice_num, client, driver, origin, destination, retour, wknd, human, prise, interne, urgence, abusive);
+      //  model.addAttribute("username", username);
         model.addAttribute("procedure", confirm);
         return "confirmation";
     }
@@ -59,12 +59,12 @@ public class HelloController {
         List<Invoice> allInvoices = jdbcTemplate.query("SELECT * FROM invoice", new InvoiceMapper());
         String theLot = "";
         for (Invoice member : allInvoices) {
-            if (member.getAge() >= 18) {
+          //  if (member.getAge() >= 18) {
                 /** html output of adults only */
                 theLot += member.getId() + "&emsp;" +
-                        member.getInvoiceName() + "&emsp;" +
-                        member.getPassword() + "&emsp;" +
-                        member.getAge() + "&emsp;" +
+                       // member.getInvoiceName() + "&emsp;" +
+                       // member.getPassword() + "&emsp;" +
+                      //  member.getAge() + "&emsp;" +
                         member.getInvoiceNum() + "&emsp;" +
                         member.getClient() + "&emsp;" +
                         member.getOrigin() + "&emsp;" +
@@ -76,12 +76,12 @@ public class HelloController {
                         member.getInterne() + "&emsp;" +
                         member.getUrgence() + "&emsp;" +
                         member.getAbusive() + "<br>";
-            }
+        //    }
             /** console output of all members */
             System.out.println(member.getId() + "\t" +
-                    member.getInvoiceName() + "\t" +
-                    member.getPassword() + "\t" +
-                    member.getAge() + "\t" +
+                 //   member.getInvoiceName() + "\t" +
+                 //   member.getPassword() + "\t" +
+                 //   member.getAge() + "\t" +
                     member.getInvoiceNum() + "\t" +
                     member.getClient() + "\t" +
                     member.getOrigin() + "\t" +
@@ -104,9 +104,9 @@ public class HelloController {
             troops += 1;
             /** html output of adults */
             justAdults += adult.getId() + "&emsp;" +
-                    adult.getInvoiceName() + "&emsp;" +
-                    adult.getPassword() + "&emsp;" +
-                    adult.getAge() + "&emsp;" +
+                 //   adult.getInvoiceName() + "&emsp;" +
+                   // adult.getPassword() + "&emsp;" +
+                  //  adult.getAge() + "&emsp;" +
                     adult.getOrigin() + "&emsp;" +
                     adult.getClient() + "&emsp;" +
                     adult.getDriver() + "&emsp;" +
@@ -119,9 +119,9 @@ public class HelloController {
 
             /** console output of adults */
             System.out.println(adult.getId() + "\t" +
-                    adult.getInvoiceName() + "\t" +
-                    adult.getPassword() + "\t" +
-                    adult.getAge() + "\t" +
+                //    adult.getInvoiceName() + "\t" +
+                //    adult.getPassword() + "\t" +
+               //     adult.getAge() + "\t" +
                     adult.getOrigin() + "\t" +
                     adult.getDestination() + "\t" +
                     adult.getClient() + "\t" +

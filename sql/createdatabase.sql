@@ -2,9 +2,9 @@ CREATE SCHEMA funwithspring;
 
 CREATE TABLE funwithspring.users (
   id INT NOT NULL AUTO_INCREMENT,
-  invoiceName VARCHAR(45) NULL,
-  password VARCHAR(45) NULL,
-  age INT NULL,
+  invoiceName VARCHAR(45) NULL, //dead
+  password VARCHAR(45) NULL,    //dead
+  age INT NULL,                 //dead
   //invoice_num TEXT(11),
   //date_stamp Date,
   //client TEXT(45),

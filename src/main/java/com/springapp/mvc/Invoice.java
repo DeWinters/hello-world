@@ -32,33 +32,8 @@ public class Invoice {
     //private TimeSpan voyage = (delivery - collection) - wait_time
     /** Dr Who **/
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getInvoiceName() {
-        return invoiceName;
-    }
-
-    public void setInvoiceName(String invoiceName) {
-        this.invoiceName = invoiceName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getAge() { return age;}
-
-    public void setAge(int age) {this.age = age;}
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
 
     public String getInvoiceNum() { return invoice_num; }
     public void setInvoiceNum(String invoice_num) {this.invoice_num = invoice_num; }

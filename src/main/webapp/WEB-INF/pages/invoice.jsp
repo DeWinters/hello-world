@@ -14,16 +14,17 @@
 
         <div id="invoice">
             <h3>${greeting}</h3>
-            <form action="/confirmation" method="post">
-                <h3>Old</h3>
-                <input type="text" name="invoiceName" > :First name <br>
-                <input type="text" name="invoiceLast" > :Last name <br>
-                <input type="text" name="age"> :Age <br>
-
+            <div id="header">
                 <h2>MAS Transit</h2>
-                <input type="text" name="invoice_num" > :Invoice# <br>
-                <input type="date" name="date_stamp"> :Date <br>
-                <select name="client" id="client">
+            </div>
+
+            <form action="/confirmation" method="post">
+
+
+                    <input type="text" name="invoice_num" class="bubble"> :Invoice# <br>
+                    <input type="date" name="date_stamp" class="bubble"> :Date <br>
+
+                <select name="client" id="client" class="bubble">
                     <option selected="selected">CSO Stg</option>
                     <option>HUS</option>
                     <option>Adassa</option>
@@ -34,7 +35,7 @@
                     <option>Neant</option>
                 </select> :Client <br>
 
-                <select name="driver" id="driver">
+                <select name="driver" id="driver" class="bubble">
                     <option>Albisser Pierre-Jean</option>
                     <option>Fehr Romain</option>
                     <option>Froehlicher Brandon</option>
@@ -43,7 +44,7 @@
                 </select> :Chauffeur <br>
 
                 <br>
-                <select name="origin" id="origin">
+                <select name="origin" id="origin" class="bubble">
                     <option>Aéroport de Strasbourg</option>
                     <option>CCOM</option>
                     <option>Centre Paul Schtrauss</option>
@@ -82,10 +83,10 @@
                     <option>PTM</option>
                     <option>Domicile</option>
                 </select> :Origin<br>
-                <input type="time" name="collection"> :Collection Time <br>
+                <input type="time" name="collection" class="bubble"> :Collection Time <br>
 
                 <br>
-                <select name="wait" id="wait">
+                <select name="wait" id="wait" class="bubble">
                     <option selected="selected"> None</option>
                     <option>15min</option>
                     <option>30min</option>
@@ -102,7 +103,7 @@
                 </select> :Waiting Time<br>
 
                 <br>
-                <select name="destination" id="destination">
+                <select name="destination" id="destination" class="bubble">
                     <option>Aéroport de Strasbourg</option>
                     <option>CCOM</option>
                     <option>Centre Paul Schtrauss</option>
@@ -141,46 +142,31 @@
                     <option>PTM</option>
                     <option>Domicile</option>
                 </select> :Destination<br>
-                <input type="time" name="delivery"> :Delivery Time <br>
+                <input type="time" name="delivery" class="bubble"> :Delivery Time <br>
 
                 <br>
-                <input type="checkbox" name="retour"> Aller/Retour <br>
-                <input type="checkbox" name="wknd"> Nuit/Wknd <br>
-                <input type="checkbox" name="human"> Personne <br>
-                <input type="checkbox" name="prise"> Prise en charge <br>
-                <input type="checkbox" name="interne"> Interne <br>
-                <input type="checkbox" name="urgence"> Urgence Vitale <br>
-                <input type="checkbox" name="abusive"> Abbusive Urgence <br>
+                <div class="bubble">
+                <input type="checkbox" name="retour" class="bubble"> Aller/Retour
+                </div>
+                <input type="checkbox" name="wknd" class="bubble"> Nuit/Wknd <br>
+                <input type="checkbox" name="human" class="bubble"> Personne <br>
+                <input type="checkbox" name="prise" class="bubble"> Prise en charge <br>
+                <input type="checkbox" name="interne" class="bubble"> Interne <br>
+                <input type="checkbox" name="urgence" class="bubble"> Urgence Vitale <br>
+                <input type="checkbox" name="abusive" class="bubble"> Abbusive Urgence <br>
                 <br>
-                <input type="submit" value="Submit">
-                <input type="reset">
+                <input type="submit" value="Submit" class="bubble">
+                <input type="reset" class="bubble">
             </form>
         </div>
+
         <form action="/invoiceList" method="post">
             <br>
-            <input type="submit" value="Show List">
+            <input type="submit" value="Show List" class="bubble">
         </form>
         <br><br>
 
-        <h3>Old</h3>
-        <h3>Edit User details</h3>
-        <form action="/editor" method="post">
-            Member ID: <input type="text" name="editId"> <br>
-            <input type="submit" value="Open">
-        </form>
-        <br><br>
 
-        <h3>Add Numbers</h3>
-        <form action="/addIt" method="post">
-            Choose number <input type="text" name="cell1"> <br>
-            Choose second <input type="text" name="cell2"> <br>
-            <input type="submit" value="Add them">
-        </form>
-
-        <form action="/shelves" method="post">
-            <br>
-            <input type="submit" value="Shelves">
-        </form>
     </div>
 </body>
 </html>

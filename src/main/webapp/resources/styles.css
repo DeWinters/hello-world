@@ -1,21 +1,50 @@
 @CHARSET "UTF-8";
 
 body{
-margin: 0px;
-    color: aqua;
+margin: 5px;
+    color: black;
 }
 
 #frame {							/* Outside Frame */
 width: 968px;
 margin: 10px auto;
-background-color: #aaa;
+background-color: blue;
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+}
+
+#loginframe {
+    width: 600px;
+    margin: 2px;
+    padding: 5px;
+    background-color: lightblue;
+    border: 1px solid black;
+}
+
+#header {
+    text-align: center;
+    color: blue;
+    background-color: yellow;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    border-radius: 8px;
+
+}
+
+.bubble:hover {
+    background-color: orange;
+    font-size: 28px;
+
 }
 
 #invoice{
     width: 600px;
     margin: 10px auto;
     padding: 5px;
-    background-color: yellow;
-    border: 5px;
-    border-color: blue;
+    background-color: grey;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
 }

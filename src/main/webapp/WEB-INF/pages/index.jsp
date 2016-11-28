@@ -10,12 +10,15 @@
     </head>
 
 <body>
-    <div id="frame">
+    <div id="loginframe">
+        <div id="header">
+          <h1><em>MAS</em></h1>
+        </div>
         <h3>Login page</h3>
         <form action="/login" method="post">
-           Username: <input type="text" name="username"><br>
-           Password: <input type="password" name="password"><br>
-            <input type="submit" value="Login">
+            Username: <input type="text" name="username" class="bubble"><br>
+            Password: <input type="password" name="password" class="bubble"><br>
+            <input type="submit" value="Login" class="bubble">
         </form>
     </div>
 
