@@ -14,7 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.text.*;
+import java.util.Locale;
 
 @Controller
 public class HelloController {
@@ -61,8 +63,18 @@ public class HelloController {
         System.out.println(dateStamp);
         System.out.println(collection);
 
+        dateStamp = dateStamp + " " + collection;
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
+        Date date = null;
+        try {
+            date = format.parse(dateStamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println(date);
+
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
-        jdbcTemplate.update("INSERT INTO invoice(invoice_num,client,driver,origin,destination,retour,wknd,human,prise,interne,urgence,abusive,date_stamp,collection) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)", invoice_num, client, driver, origin, destination, retour, wknd, human, prise, interne, urgence, abusive, dateStamp, collection);
+        jdbcTemplate.update("INSERT INTO invoice(invoice_num,client,driver,origin,destination,retour,wknd,human,prise,interne,urgence,abusive,date_stamp) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)", invoice_num, client, driver, origin, destination, retour, wknd, human, prise, interne, urgence, abusive, dateStamp);
       //  model.addAttribute("username", username);
         model.addAttribute("procedure", confirm);
        // System.out.println(dateStamp);
@@ -82,7 +94,6 @@ public class HelloController {
                     member.getDateStamp() + "&emsp;" +
                     member.getInvoiceNum() + "&emsp;" +
                     member.getClient() + "&emsp;" +
-                    member.getOrigin() + "&emsp;" +
                     member.getOrigin() + "&emsp;" +
                     member.getDestination() + "&emsp;" +
                     member.getRetour() + "&emsp;" +
@@ -118,6 +129,8 @@ public class HelloController {
             troops += 1;
             /** html output of adults */
             justAdults += adult.getId() + "&emsp;" +
+                    adult.getInvoiceNum() + "emsp;" +
+                    adult.getDateStamp() + "&emsp;" +
                     adult.getOrigin() + "&emsp;" +
                     adult.getClient() + "&emsp;" +
                     adult.getDriver() + "&emsp;" +
@@ -130,6 +143,8 @@ public class HelloController {
 
             /** console output of adults */
             System.out.println(adult.getId() + "\t" +
+                    adult.getInvoiceNum() + "\t" +
+                    adult.getDateStamp() + "\t" +
                     adult.getOrigin() + "\t" +
                     adult.getDestination() + "\t" +
                     adult.getClient() + "\t" +

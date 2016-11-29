@@ -1,6 +1,7 @@
 package com.springapp.mvc;
 
 import java.util.Date;
+import java.text.SimpleDateFormat;
 
 
 public class Invoice {
@@ -19,6 +20,9 @@ public class Invoice {
     private Boolean urgence;
     private Boolean abusive;
     private Date dateStamp;
+    //private SimpleDateFormat dateStamp;
+
+    private SimpleDateFormat collectionTime;
 
     /** Time Lord's Dilemmas **/
     //private Time collection;      //learn to collect Time, and append it to date_stamp ( date_stamp can be removed from database once this is operation if functional.)
@@ -72,6 +76,15 @@ public class Invoice {
 
     public Date getDateStamp() { return dateStamp; }
     public void setDateStamp(Date dateStamp){ this.dateStamp = dateStamp; }
+
+    //public SimpleDateFormat getDateStamp() { return dateStamp; }
+   // public void setDateStamp(SimpleDateFormat dateStamp){ this.dateStamp = dateStamp; }
+
+//    public SimpleDateFormat getCollection(){ return collectionTime;}
+  //  public void getCollectionTime(Date dateStamp, SimpleDateFormat collectionTime){
+    //    collectionTime
+      //  this.collectionTime = ;
+    //}
 
 
     @Override
