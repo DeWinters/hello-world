@@ -2,6 +2,7 @@ package com.springapp.mvc;
 
 import java.util.Date;
 
+
 public class Invoice {
 
     private long id;
@@ -17,19 +18,18 @@ public class Invoice {
     private Boolean interne;
     private Boolean urgence;
     private Boolean abusive;
-
     private Date dateStamp;
 
+    /** Time Lord's Dilemmas **/
+    //private Time collection;      //learn to collect Time, and append it to date_stamp ( date_stamp can be removed from database once this is operation if functional.)
+    //private Time delivery;        //test if delivery Time is earlier than collection Time, append delivery to date or date.Day++ as required
+    //private TimeSpan wait_time    //convert timespan string from view into a timespan variable
+    //private TimeSpan voyage = (delivery - collection) - wait_time
+
+    /** Tarif Table Methods **/
     private float tarif;    // Collect hourly tarif by comparing origin & destination to funwithspring.tarif (stop1 & stop2) tarif_rate
     private String region;  // Also collect region from funwithspring.tarif region
 
-    /** Time Lord's Dilemma **/
-    // DateFormat df = new SimpleDateFormat("dd/MM/yyyy"); ????????
-    //private Time collection;
-    //private Time delivery;
-    //private TimeSpan wait_time
-    //private TimeSpan voyage = (delivery - collection) - wait_time
-    /** Dr Who **/
 
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
@@ -70,8 +70,8 @@ public class Invoice {
     public Boolean getUrgence() { return urgence; }
     public void setUrgence(Boolean urgence) { this.urgence = urgence; }
 
-    //public Date getDateStamp() { return dateStamp; }
-   // public void setDateStamp(Date dateStamp){ this.dateStamp = dateStamp; }
+    public Date getDateStamp() { return dateStamp; }
+    public void setDateStamp(Date dateStamp){ this.dateStamp = dateStamp; }
 
 
     @Override

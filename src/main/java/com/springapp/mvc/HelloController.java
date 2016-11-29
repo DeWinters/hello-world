@@ -1,6 +1,7 @@
 package com.springapp.mvc;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Date;
+import java.text.*;
 
 @Controller
 public class HelloController {
@@ -44,17 +46,23 @@ public class HelloController {
     /***************************************** Invoice *********************************************************/
 
     @RequestMapping(value = "/confirmation", method = RequestMethod.POST)
-    public String calculate(ModelMap model, @RequestParam("invoice_num") String invoice_num, @RequestParam("client") String client, @RequestParam("driver") String driver, @RequestParam("origin") String origin, @RequestParam("destination") String destination, @RequestParam(value="retour", required=false) Boolean retour, @RequestParam( required=false, value="wknd") Boolean wknd, @RequestParam(required=false, value="human") Boolean human, @RequestParam(required=false, value="prise") Boolean prise, @RequestParam(required=false, value="interne") Boolean interne, @RequestParam(required=false, value="urgence") Boolean urgence, @RequestParam(required=false, value="abusive") Boolean abusive) {
-        if(wknd == null) { wknd = false; }
+    public String calculate(ModelMap model, @RequestParam("invoice_num") String invoice_num, @RequestParam("client") String client, @RequestParam("driver") String driver, @RequestParam("origin") String origin, @RequestParam("destination") String destination,
+                            @RequestParam(value="retour", required=false) Boolean retour, @RequestParam( required=false, value="wknd") Boolean wknd, @RequestParam(required=false, value="human") Boolean human, @RequestParam(required=false, value="prise") Boolean prise,
+                            @RequestParam(required=false, value="interne") Boolean interne, @RequestParam(required=false, value="urgence") Boolean urgence, @RequestParam(required=false, value="abusive") Boolean abusive, @RequestParam(value="date_stamp") String dateStamp,
+                            @RequestParam(value="collection") String collection) {
+
+        if(wknd == null) { wknd = false; }      // checkbox=false normalizations
         if(retour == null) { retour = false; }
         if(human == null) { human = false; }
         if(interne == null) { interne = false; }
         if(urgence == null) { urgence = false; }
         if(abusive == null) { abusive = false; }
 
+        System.out.println(dateStamp);
+        System.out.println(collection);
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
-        jdbcTemplate.update("INSERT INTO invoice(invoice_num,client,driver,origin,destination,retour,wknd,human,prise,interne,urgence,abusive) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)", invoice_num, client, driver, origin, destination, retour, wknd, human, prise, interne, urgence, abusive);
+        jdbcTemplate.update("INSERT INTO invoice(invoice_num,client,driver,origin,destination,retour,wknd,human,prise,interne,urgence,abusive,date_stamp,collection) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)", invoice_num, client, driver, origin, destination, retour, wknd, human, prise, interne, urgence, abusive, dateStamp, collection);
       //  model.addAttribute("username", username);
         model.addAttribute("procedure", confirm);
        // System.out.println(dateStamp);
@@ -71,9 +79,10 @@ public class HelloController {
         for (Invoice member : allInvoices) {
             /** html output of all invoices **/
             theLot += member.getId() + "&emsp;" +
-               //     member.getDateStamp() + "&emsp;" +
+                    member.getDateStamp() + "&emsp;" +
                     member.getInvoiceNum() + "&emsp;" +
                     member.getClient() + "&emsp;" +
+                    member.getOrigin() + "&emsp;" +
                     member.getOrigin() + "&emsp;" +
                     member.getDestination() + "&emsp;" +
                     member.getRetour() + "&emsp;" +
@@ -86,7 +95,7 @@ public class HelloController {
 
             /** console output of all invoices */
             System.out.println(member.getId() + "\t" +
-              //     member.getDateStamp() + "\t" +
+                    member.getDateStamp() + "\t" +
                     member.getInvoiceNum() + "\t" +
                     member.getClient() + "\t" +
                     member.getOrigin() + "\t" +
