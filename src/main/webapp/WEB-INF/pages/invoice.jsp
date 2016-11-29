@@ -145,15 +145,13 @@
                 <input type="time" name="delivery" class="bubble"> :Delivery Time <br>
 
                 <br>
-                <div class="bubble">
-                <input type="checkbox" name="retour" class="bubble"> Aller/Retour
-                </div>
-                <input type="checkbox" name="wknd" class="bubble"> Nuit/Wknd <br>
-                <input type="checkbox" name="human" class="bubble"> Personne <br>
-                <input type="checkbox" name="prise" class="bubble"> Prise en charge <br>
-                <input type="checkbox" name="interne" class="bubble"> Interne <br>
-                <input type="checkbox" name="urgence" class="bubble"> Urgence Vitale <br>
-                <input type="checkbox" name="abusive" class="bubble"> Abbusive Urgence <br>
+                    <input type="checkbox" name="retour"  > Aller/Retour <br>
+                    <input type="checkbox" name="wknd" > Nuit/Wknd <br>
+                    <input type="checkbox" name="human" > Personne <br>
+                    <input type="checkbox" name="prise" > Prise en charge <br>
+                    <input type="checkbox" name="interne" > Interne <br>
+                    <input type="checkbox" name="urgence" > Urgence Vitale <br>
+                    <input type="checkbox" name="abusive" > Abbusive Urgence <br>
                 <br>
                 <input type="submit" value="Submit" class="bubble">
                 <input type="reset" class="bubble">

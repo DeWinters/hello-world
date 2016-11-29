@@ -33,13 +33,7 @@ background-color: blue;
 
 }
 
-.bubble:hover {
-    background-color: orange;
-    font-size: 28px;
-
-}
-
-#invoice{
+#invoice {
     width: 600px;
     margin: 10px auto;
     padding: 5px;
@@ -47,4 +41,9 @@ background-color: blue;
     border-style: solid;
     border-color: black;
     border-width: 1px;
+}
+
+.bubble {
+
+    font-size: 24px;
 }

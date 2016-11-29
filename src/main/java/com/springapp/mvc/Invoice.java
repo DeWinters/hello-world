@@ -1,12 +1,10 @@
 package com.springapp.mvc;
 
+import java.util.Date;
+
 public class Invoice {
 
     private long id;
-    private String invoiceName;
-    private String password;
-    private int age;
-
     private String invoice_num;
     private String client;
     private String driver;
@@ -20,12 +18,13 @@ public class Invoice {
     private Boolean urgence;
     private Boolean abusive;
 
+    private Date dateStamp;
+
     private float tarif;    // Collect hourly tarif by comparing origin & destination to funwithspring.tarif (stop1 & stop2) tarif_rate
     private String region;  // Also collect region from funwithspring.tarif region
 
     /** Time Lord's Dilemma **/
     // DateFormat df = new SimpleDateFormat("dd/MM/yyyy"); ????????
-    //private Date date_stamp;
     //private Time collection;
     //private Time delivery;
     //private TimeSpan wait_time
@@ -71,21 +70,15 @@ public class Invoice {
     public Boolean getUrgence() { return urgence; }
     public void setUrgence(Boolean urgence) { this.urgence = urgence; }
 
+    //public Date getDateStamp() { return dateStamp; }
+   // public void setDateStamp(Date dateStamp){ this.dateStamp = dateStamp; }
 
-
-
-    /** Calling Dr Who **/
-    //public Date getDateStamp() { return date_stamp; }
-    //public void setDateStamp(Date date_stamp) {this.date_stamp = date_stamp; }
-    /** TimeLord Dilemma **/
 
     @Override
     public String toString() {
         return "Invoice{" +
                 "id=" + id +
-                ", invoiceName='" + invoiceName + '\'' +
-                ", password='" + password + '\'' +
-                ", age=" + age + '\'' +
+                ", dateStamp'" + dateStamp + '\'' +
                 ", invoice_num='" + invoice_num + '\'' +
                 ", client='" + client + '\'' +
                 ", driver='" + driver + '\'' +
