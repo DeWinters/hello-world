@@ -6,13 +6,10 @@
 <body>
     <h1>Invoice List:</h1>
 
-    Java solution: <br>
+    ALL INVOICES: <br>
     ${roleCall}
     <br><br><br>
 
-    Query solution: <br>
-    ${theDraft} <br>
-    ${eligible} eligible voters.<br>
     ${userCount} total population.<br>
     <br><br><br>
 

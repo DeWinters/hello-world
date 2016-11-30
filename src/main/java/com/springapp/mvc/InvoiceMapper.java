@@ -9,8 +9,7 @@ import java.sql.SQLException;
 
 public class InvoiceMapper implements ParameterizedRowMapper<Invoice> {
     @Override
-    public Invoice mapRow(ResultSet resultSet, int i) throws SQLException {
-        Invoice invoice = new Invoice();
+    public Invoice mapRow(ResultSet resultSet, int i) throws SQLException {Invoice invoice = new Invoice();
         invoice.setId(resultSet.getLong("id"));
         invoice.setInvoiceNum(resultSet.getString("invoice_num"));
         invoice.setClient(resultSet.getString("client"));
@@ -24,8 +23,9 @@ public class InvoiceMapper implements ParameterizedRowMapper<Invoice> {
         invoice.setInterne(resultSet.getBoolean("interne"));
         invoice.setUrgence(resultSet.getBoolean("urgence"));
         invoice.setAbusive(resultSet.getBoolean("abusive"));
-        invoice.setDateStamp(resultSet.getDate("date_stamp"));
-        //invoice.setDateStamp(resultSet.getTimestamp("collection_time"));
+       // invoice.setDateStamp(resultSet.getDate("date_stamp"));
+        invoice.setCollectionTime(resultSet.getDate("collection_time"));
+        invoice.setDeliveryTime(resultSet.getDate("delivery_time"));
         return invoice;
     }
 }

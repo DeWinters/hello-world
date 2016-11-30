@@ -1,7 +1,10 @@
 package com.springapp.mvc;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 
 public class Invoice {
@@ -19,10 +22,10 @@ public class Invoice {
     private Boolean interne;
     private Boolean urgence;
     private Boolean abusive;
-    private Date dateStamp;
-    //private SimpleDateFormat dateStamp;
+    //private Date dateStamp;
 
-    private SimpleDateFormat collectionTime;
+    private Date collectionTime;
+    private Date deliveryTime;
 
     /** Time Lord's Dilemmas **/
     //private Time collection;      //learn to collect Time, and append it to date_stamp ( date_stamp can be removed from database once this is operation if functional.)
@@ -74,24 +77,20 @@ public class Invoice {
     public Boolean getUrgence() { return urgence; }
     public void setUrgence(Boolean urgence) { this.urgence = urgence; }
 
-    public Date getDateStamp() { return dateStamp; }
-    public void setDateStamp(Date dateStamp){ this.dateStamp = dateStamp; }
+    //public Date getDateStamp() { return dateStamp; }
+    //public void setDateStamp(Date dateStamp){ this.dateStamp = dateStamp; }
 
-    //public SimpleDateFormat getDateStamp() { return dateStamp; }
-   // public void setDateStamp(SimpleDateFormat dateStamp){ this.dateStamp = dateStamp; }
+    public Date getCollectionTime() { return collectionTime; }
+    public void setCollectionTime(Date collectionTime) { this.collectionTime = collectionTime; }
 
-//    public SimpleDateFormat getCollection(){ return collectionTime;}
-  //  public void getCollectionTime(Date dateStamp, SimpleDateFormat collectionTime){
-    //    collectionTime
-      //  this.collectionTime = ;
-    //}
+    public Date getDeliveryTime() { return deliveryTime; }
+    public void setDeliveryTime( Date deliveryTime) { this.deliveryTime = deliveryTime; }
 
 
     @Override
     public String toString() {
         return "Invoice{" +
                 "id=" + id +
-                ", dateStamp'" + dateStamp + '\'' +
                 ", invoice_num='" + invoice_num + '\'' +
                 ", client='" + client + '\'' +
                 ", driver='" + driver + '\'' +
@@ -104,6 +103,8 @@ public class Invoice {
                 ", interne'" + interne + '\'' +
                 ", urgence'" + urgence + '\'' +
                 ", abusive'" + abusive + '\'' +
+                ", collectionTime'" + collectionTime + '\'' +
+                ", deliveryTime'" + deliveryTime + '\'' +
                 '}';
     }
 }

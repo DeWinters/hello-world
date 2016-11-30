@@ -42,3 +42,6 @@ CREATE TABLE funwithspring.tarif (
   tarif_rate float,
   region Text(45),
   PRIMARY KEY (tarif_id));
+
+
+select * from invoice where collection_time between '2016-11-01 00:00:00' and '2016-11-01 00:00:00'
