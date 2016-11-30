@@ -106,13 +106,15 @@ public class HelloController {
         for (Invoice member : allInvoices) {
 
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.ENGLISH);
-           // String collectionDate = format.format(member.getCollectionTime());
+           // String collected = format.format(member.getCollectionTime());
 
-            Date collectionDate = member.getCollectionTime();
-         ////   if (collectionDate == null) {
-         //      String temp = "2000-01-01 01:00:00";
-         //       collectionDate = format.format(temp);
-         //   }
+          //  String collect = member.CollectionTime().ToString();
+           // collectionDate= format.format(member.getCollectionTime());
+            if (member.getCollectionTime() == null) {
+           //     String temp = "2000-01-01 01:00:00";
+           //     collectionDate = format.format(member.getCollectionTime());
+
+            }
 
 
 
@@ -137,7 +139,7 @@ public class HelloController {
 
             /** console output of all invoices */
             System.out.println(member.getId() + "\t" + member.getInvoiceNum() + "\t" + member.getClient() + "\t" +
-                    member.getOrigin() + "\t" +  collectionDate + "\t" + member.getDestination() + "\t" +
+                    member.getOrigin() + "\t" +  member.getCollectionTime() + "\t" + member.getDestination() + "\t" +
                     member.getDeliveryTime() + "\t" + member.getRetour() + "\t" + member.getWknd() + "\t" +
                     member.getHuman() + "\t" + member.getPrise() + "\t" + member.getInterne() + "\t" +
                     member.getUrgence() + "\t" + member.getAbusive());
