@@ -45,11 +45,6 @@ public class HelloController {
     @RequestMapping(value="/editor",method = RequestMethod.POST)                    /** this looping construct can't be right. a single user obj would be better than a List obj */
     public String editMember(ModelMap model,@RequestParam("editId") long id){
         JdbcTemplate jdbctemplate = new JdbcTemplate(dataSauce);
-        //String xxx="";
-        //jdbctemplate.query("SELECT username FROM USERS WHERE id =5", xxx);                // nope
-        //xxx = jdbctemplate.query("SELECT username FROM USERS WHERE id=5");                // nope
-        //User a = jdbctemplate.query("SELECT * FROM USERS WHERE ID =?", id);               // nope
-
         User member = jdbctemplate.queryForObject("SELECT * FROM USERS WHERE ID =?", new UserMapper(), id);
         model.addAttribute("name", member.getUsername());
         model.addAttribute("pass", member.getPassword());
