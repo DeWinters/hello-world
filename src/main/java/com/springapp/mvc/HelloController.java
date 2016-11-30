@@ -20,7 +20,7 @@ public class HelloController {
     @Autowired
     private DriverManagerDataSource dataSauce;
 
-    String owner = "TheStudentProgrammer";
+    private final static String OWNER = "TheStudentProgrammer";
     String confirm ="";
     long hack = 0;                                                                  // this will be made clear
 
@@ -45,11 +45,6 @@ public class HelloController {
     @RequestMapping(value="/editor",method = RequestMethod.POST)                    /** this looping construct can't be right. a single user obj would be better than a List obj */
     public String editMember(ModelMap model,@RequestParam("editId") long id){
         JdbcTemplate jdbctemplate = new JdbcTemplate(dataSauce);
-        //String xxx="";
-        //jdbctemplate.query("SELECT username FROM USERS WHERE id =5", xxx);                // nope
-        //xxx = jdbctemplate.query("SELECT username FROM USERS WHERE id=5");                // nope
-        //User a = jdbctemplate.query("SELECT * FROM USERS WHERE ID =?", id);               // nope
-
         User member = jdbctemplate.queryForObject("SELECT * FROM USERS WHERE ID =?", new UserMapper(), id);
         model.addAttribute("name", member.getUsername());
         model.addAttribute("pass", member.getPassword());
@@ -62,7 +57,8 @@ public class HelloController {
 
 
     @RequestMapping(value="/confirmation",method = RequestMethod.POST)              /** Working as intended */
-    public String calculate(ModelMap model,@RequestParam("username") String username,@RequestParam("password") String password,@RequestParam("age") String age) {
+    public String calculate(ModelMap model,@RequestParam("username") String username,@RequestParam("password") String password,
+                            @RequestParam("age") String age) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
         jdbcTemplate.update("INSERT INTO USERS(username,password,age) VALUES(?,?,?)",username,password,age);
         model.addAttribute("username", username);
@@ -123,7 +119,7 @@ public class HelloController {
 
         System.out.println(allUsers.iterator());                // failed:seems to find address of table instead of contents of table elements
         model.addAttribute("userCount", allUsers.size());       // works: posts the total number of table entries
-        model.addAttribute("owner", owner);                     // works: posts a string to the page
+        model.addAttribute("OWNER", OWNER);                     // works: posts a string to the page
         model.addAttribute("roleCall", theLot);                 // works: Java solution to age data restriction
         model.addAttribute("theDraft", justAdults);             // works: Query solution to age data restriction
         model.addAttribute("eligible", troops);                 // works: counts total adults
@@ -165,7 +161,8 @@ public class HelloController {
 
 
     @RequestMapping(value="/addItem", method = RequestMethod.POST)                  /** Working as intended */
-    public String newItem(ModelMap model, @RequestParam("itemId") String id, @RequestParam("itemName") String name, @RequestParam("itemPrice") float price){
+    public String newItem(ModelMap model, @RequestParam("itemId") String id, @RequestParam("itemName") String name,
+                          @RequestParam("itemPrice") float price){
         JdbcTemplate jdbcTemp = new JdbcTemplate(dataSauce);
         jdbcTemp.update("INSERT INTO STOCK(itemId,itemName,itemPrice) VALUES(?,?,?)", id, name, price);
         model.addAttribute("id", id);
