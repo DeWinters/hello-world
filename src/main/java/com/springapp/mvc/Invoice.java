@@ -1,10 +1,7 @@
 package com.springapp.mvc;
 
-import java.text.DateFormat;
-import java.text.ParseException;
+import java.sql.Timestamp;
 import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 
 public class Invoice {
@@ -24,7 +21,7 @@ public class Invoice {
     private Boolean abusive;
     //private Date dateStamp;
 
-    private Date collectionTime;
+    private Timestamp collectionTime;
     private Date deliveryTime;
 
     /** Time Lord's Dilemmas **/
@@ -80,8 +77,8 @@ public class Invoice {
     //public Date getDateStamp() { return dateStamp; }
     //public void setDateStamp(Date dateStamp){ this.dateStamp = dateStamp; }
 
-    public Date getCollectionTime() { return collectionTime; }
-    public void setCollectionTime(Date collectionTime) { this.collectionTime = collectionTime; }
+    public Timestamp getCollectionTime() { return collectionTime; }
+    public void setCollectionTime(Timestamp collectionTime) { this.collectionTime = collectionTime; }
 
     public Date getDeliveryTime() { return deliveryTime; }
     public void setDeliveryTime( Date deliveryTime) { this.deliveryTime = deliveryTime; }

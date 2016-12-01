@@ -17,6 +17,7 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.*;
 import java.util.Locale;
+import java.sql.Timestamp;
 
 @Controller
 public class HelloController {
@@ -98,57 +99,60 @@ public class HelloController {
 
 
     @RequestMapping(value = "/invoiceList", method = RequestMethod.POST)
-    public String listMembers(ModelMap model) {
+    public String listMembersPost(ModelMap model) {
+        return listOutput(model);
+    }
+
+    @RequestMapping(value = "/invoiceList", method = RequestMethod.GET)
+    public String listMembersGet(ModelMap model) {
+      return listOutput(model);
+    }
+
+
+    private String listOutput(ModelMap invoiceMap){
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
         List<Invoice> allInvoices = jdbcTemplate.query("SELECT * FROM invoice", new InvoiceMapper());
 
-        String theLot = "";                 /** jsp output of all invoices **/
-        for (Invoice member : allInvoices) {
-
+        String theLot = "";                                 /** jsp output of all invoices **/
+        for (Invoice invoice : allInvoices) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.ENGLISH);
-           // String collected = format.format(member.getCollectionTime());
+            String collectionString;
+            if (invoice.getCollectionTime() == null) {
+                collectionString = "UnDated";
+            } else {
+                collectionString = format.format(invoice.getCollectionTime());}
 
-          //  String collect = member.CollectionTime().ToString();
-           // collectionDate= format.format(member.getCollectionTime());
-            if (member.getCollectionTime() == null) {
-           //     String temp = "2000-01-01 01:00:00";
-           //     collectionDate = format.format(member.getCollectionTime());
-
-            }
-
-
-
-           theLot += "ID: " +member.getId() +
-                    "&emsp; INVOICE:" + member.getInvoiceNum() +
-                    "&emsp; CLIENT:" +  member.getClient() +
+            theLot += "ID: " +invoice.getId() +
+                    "&emsp; INVOICE:" + invoice.getInvoiceNum() +
+                    "&emsp; CLIENT:" +  invoice.getClient() +
                     "<br>" +
-                    "&emsp; ORIGIN:" +  member.getOrigin() +
-                    "&emsp; COLLECTION:" + member.getCollectionTime() +
+                    "&emsp; ORIGIN:" +  invoice.getOrigin() +
+                    "&emsp; COLLECTION:" + collectionString +
                     "<br>" +
-                    "&emsp; DESTINATION:" + member.getDestination() +
-                    "&emsp; DELIVERY:" + member.getDeliveryTime() +
+                    "&emsp; DESTINATION:" + invoice.getDestination() +
+                    "&emsp; DELIVERY:" + invoice.getDeliveryTime() +
                     "<br>" +
-                    "&emsp; RET:" + member.getRetour() +
-                    "&emsp; WKND" + member.getWknd() +
-                    "&emsp; HUMAN" + member.getHuman() +
-                    "&emsp; PRISE" + member.getPrise() +
-                    "&emsp; INTERN" + member.getInterne() +
-                    "&emsp; URGEN" + member.getUrgence() +
-                    "&emsp; ABUSE" + member.getAbusive() +
+                    "&emsp; RET:" + invoice.getRetour() +
+                    "&emsp; WKND" + invoice.getWknd() +
+                    "&emsp; HUMAN" + invoice.getHuman() +
+                    "&emsp; PRISE" + invoice.getPrise() +
+                    "&emsp; INTERN" + invoice.getInterne() +
+                    "&emsp; URGEN" + invoice.getUrgence() +
+                    "&emsp; ABUSE" + invoice.getAbusive() +
                     "<br><br>";
 
             /** console output of all invoices */
-            System.out.println(member.getId() + "\t" + member.getInvoiceNum() + "\t" + member.getClient() + "\t" +
-                    member.getOrigin() + "\t" +  member.getCollectionTime() + "\t" + member.getDestination() + "\t" +
-                    member.getDeliveryTime() + "\t" + member.getRetour() + "\t" + member.getWknd() + "\t" +
-                    member.getHuman() + "\t" + member.getPrise() + "\t" + member.getInterne() + "\t" +
-                    member.getUrgence() + "\t" + member.getAbusive());
+            System.out.println(invoice.getId() + "\t" + invoice.getInvoiceNum() + "\t" + invoice.getClient() + "\t" +
+                    invoice.getOrigin() + "\t" +  collectionString + "\t" + invoice.getDestination() + "\t" +
+                    invoice.getDeliveryTime() + "\t" + invoice.getRetour() + "\t" + invoice.getWknd() + "\t" +
+                    invoice.getHuman() + "\t" + invoice.getPrise() + "\t" + invoice.getInterne() + "\t" +
+                    invoice.getUrgence() + "\t" + invoice.getAbusive());
         }
 
         System.out.println(allInvoices.iterator());                // failed:seems to find address of table instead of contents of table elements
-        model.addAttribute("userCount", allInvoices.size());       // works: posts the total number of table entries
-        model.addAttribute("owner", owner);                     // works: posts a string to the page
-        model.addAttribute("roleCall", theLot);                 // works: Java solution to age data restriction
+        invoiceMap.addAttribute("userCount", allInvoices.size());       // works: posts the total number of table entries
+        invoiceMap.addAttribute("owner", owner);                     // works: posts a string to the page
+        invoiceMap.addAttribute("roleCall", theLot);                 // works: Java solution to age data restriction
         return "invoiceList";
     }
 
