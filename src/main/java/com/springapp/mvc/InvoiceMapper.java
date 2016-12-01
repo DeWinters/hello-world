@@ -25,7 +25,7 @@ public class InvoiceMapper implements ParameterizedRowMapper<Invoice> {
         invoice.setAbusive(resultSet.getBoolean("abusive"));
        // invoice.setDateStamp(resultSet.getDate("date_stamp"));
         invoice.setCollectionTime(resultSet.getTimestamp("collection_time"));
-        invoice.setDeliveryTime(resultSet.getDate("delivery_time"));
+        invoice.setDeliveryTime(resultSet.getTimestamp("delivery_time"));
         return invoice;
     }
 }

@@ -19,10 +19,9 @@ public class Invoice {
     private Boolean interne;
     private Boolean urgence;
     private Boolean abusive;
-    //private Date dateStamp;
 
     private Timestamp collectionTime;
-    private Date deliveryTime;
+    private Timestamp deliveryTime;
 
     /** Time Lord's Dilemmas **/
     //private Time collection;      //learn to collect Time, and append it to date_stamp ( date_stamp can be removed from database once this is operation if functional.)
@@ -74,14 +73,11 @@ public class Invoice {
     public Boolean getUrgence() { return urgence; }
     public void setUrgence(Boolean urgence) { this.urgence = urgence; }
 
-    //public Date getDateStamp() { return dateStamp; }
-    //public void setDateStamp(Date dateStamp){ this.dateStamp = dateStamp; }
-
     public Timestamp getCollectionTime() { return collectionTime; }
     public void setCollectionTime(Timestamp collectionTime) { this.collectionTime = collectionTime; }
 
-    public Date getDeliveryTime() { return deliveryTime; }
-    public void setDeliveryTime( Date deliveryTime) { this.deliveryTime = deliveryTime; }
+    public Timestamp getDeliveryTime() { return deliveryTime; }
+    public void setDeliveryTime( Timestamp deliveryTime) { this.deliveryTime = deliveryTime; }
 
 
     @Override

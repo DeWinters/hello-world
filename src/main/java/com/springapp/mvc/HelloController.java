@@ -113,33 +113,23 @@ public class HelloController {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
         List<Invoice> allInvoices = jdbcTemplate.query("SELECT * FROM invoice", new InvoiceMapper());
 
-        String theLot = "";                                 /** jsp output of all invoices **/
+        String theLot = "";                                 // jsp invoice string list
+        String tabledInvoices = "";                         // jsp invoice list table builder;
         for (Invoice invoice : allInvoices) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.ENGLISH);
             String collectionString;
             if (invoice.getCollectionTime() == null) {
                 collectionString = "UnDated";
             } else {
-                collectionString = format.format(invoice.getCollectionTime());}
+                collectionString = format.format(invoice.getCollectionTime());
+            }
 
-            theLot += "ID: " +invoice.getId() +
-                    "&emsp; INVOICE:" + invoice.getInvoiceNum() +
-                    "&emsp; CLIENT:" +  invoice.getClient() +
-                    "<br>" +
-                    "&emsp; ORIGIN:" +  invoice.getOrigin() +
-                    "&emsp; COLLECTION:" + collectionString +
-                    "<br>" +
-                    "&emsp; DESTINATION:" + invoice.getDestination() +
-                    "&emsp; DELIVERY:" + invoice.getDeliveryTime() +
-                    "<br>" +
-                    "&emsp; RET:" + invoice.getRetour() +
-                    "&emsp; WKND" + invoice.getWknd() +
-                    "&emsp; HUMAN" + invoice.getHuman() +
-                    "&emsp; PRISE" + invoice.getPrise() +
-                    "&emsp; INTERN" + invoice.getInterne() +
-                    "&emsp; URGEN" + invoice.getUrgence() +
-                    "&emsp; ABUSE" + invoice.getAbusive() +
-                    "<br><br>";
+            String deliveryString =null;
+            if (invoice.getDeliveryTime() == null) {
+                collectionString = "UnDated";
+            } else {
+                deliveryString = format.format(invoice.getDeliveryTime());
+            }
 
             /** console output of all invoices */
             System.out.println(invoice.getId() + "\t" + invoice.getInvoiceNum() + "\t" + invoice.getClient() + "\t" +
@@ -147,12 +137,22 @@ public class HelloController {
                     invoice.getDeliveryTime() + "\t" + invoice.getRetour() + "\t" + invoice.getWknd() + "\t" +
                     invoice.getHuman() + "\t" + invoice.getPrise() + "\t" + invoice.getInterne() + "\t" +
                     invoice.getUrgence() + "\t" + invoice.getAbusive());
+
+
+            /** Tabled jsp output of all invoices **/
+            tabledInvoices +="<tr><td>" + invoice.getId() +"</td><td>"+ invoice.getClient() +"</td><td>"+
+                    invoice.getDriver() +"</td><td>"+ collectionString + "</td><td>" +  invoice.getOrigin() + "</td><td>"+
+                    deliveryString +"</td><td>"+ invoice.getDestination() +"</td><td>"+ invoice.getRetour()+ "</td><td>"+
+                    invoice.getWknd() +"</td><td>"+ invoice.getHuman() +"</td><td>"+ invoice.getPrise()+ "</td><td>"+
+                    invoice.getInterne() +"</td><td>"+ invoice.getUrgence() +"</td><td>"+ invoice.getAbusive() +"</td></tr>";
+
         }
 
         System.out.println(allInvoices.iterator());                // failed:seems to find address of table instead of contents of table elements
-        invoiceMap.addAttribute("userCount", allInvoices.size());       // works: posts the total number of table entries
-        invoiceMap.addAttribute("owner", owner);                     // works: posts a string to the page
-        invoiceMap.addAttribute("roleCall", theLot);                 // works: Java solution to age data restriction
+        invoiceMap.addAttribute("userCount", allInvoices.size());  // works: posts the total number of table entries
+        invoiceMap.addAttribute("owner", owner);                   // works: posts a string to the page
+        invoiceMap.addAttribute("roleCall", theLot);               // works: Java solution
+        invoiceMap.addAttribute("boxedData", tabledInvoices);
         return "invoiceList";
     }
 
