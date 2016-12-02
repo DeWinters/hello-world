@@ -65,8 +65,8 @@ public class HelloController {
         if(urgence == null) { urgence = false; }
         if(abusive == null) { abusive = false; }
 
-        System.out.println(dateStamp);                                                          // just date
-        System.out.println(collection);                                                         // just time
+        System.out.println(dateStamp);                                                          // just date console
+        System.out.println(collection);                                                         // just time console
 
         String collectionStamp = dateStamp + " " + collection;       /** collection_time creation **/
         System.out.println(collectionStamp);
@@ -77,7 +77,7 @@ public class HelloController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        System.out.println(collectionTime);                                                     // collectionTime
+        System.out.println(collectionTime);                                                     // collectionTime console
 
         String deliveryStamp = dateStamp + " " + delivery;          /** delivery_time creation **/
         System.out.println(deliveryStamp);
@@ -87,12 +87,25 @@ public class HelloController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        System.out.println(deliveryTime);                                                       // deliveryTime
+        System.out.println(deliveryTime);                                                       // deliveryTime console
 
+        /** Evaluation of deliveryTime vs  collectionTime for valid timespan probably goes here **/
+        long durationLong = deliveryTime.getTime() - collectionTime.getTime();                  // Temporary DB millisecond storage.
+        //System.out.println(durationLong);                                                           // duration console
+       // Date voyage = new Date(durationLong);
+       // String trip = format.format(voyage);
+       // System.out.println(trip);                                                                   // trip console
+
+        DurationCreator current = new DurationCreator(collectionTime, deliveryTime);
+        //String voyageLength = current.Voyage(collectionTime, deliveryTime);
+        System.out.println(current.ToString());
+
+
+        /** Send invoice to the database **/
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
         jdbcTemplate.update("INSERT INTO invoice(invoice_num,client,driver,origin,destination,retour,wknd,human,prise," +
-                "interne,urgence,abusive,collection_time,delivery_time) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)", invoice_num, client, driver,
-                origin, destination, retour, wknd, human, prise, interne, urgence, abusive, collectionTime, deliveryTime);
+                "interne,urgence,abusive,collection_time,delivery_time,duration) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", invoice_num, client, driver,
+                origin, destination, retour, wknd, human, prise, interne, urgence, abusive, collectionTime, deliveryTime, durationLong);
         model.addAttribute("procedure", confirm);
         return "confirmation";
     }
@@ -140,7 +153,7 @@ public class HelloController {
 
 
             /** Tabled jsp output of all invoices **/
-            tabledInvoices +="<tr><td>" + invoice.getId() +"</td><td>"+ invoice.getClient() +"</td><td>"+
+            tabledInvoices +="<tr><td>" + invoice.getId() +"</td><td>"+ invoice.getInvoiceNum() +"</td><td>"+ invoice.getClient() +"</td><td>"+
                     invoice.getDriver() +"</td><td>"+ collectionString + "</td><td>" +  invoice.getOrigin() + "</td><td>"+
                     deliveryString +"</td><td>"+ invoice.getDestination() +"</td><td>"+ invoice.getRetour()+ "</td><td>"+
                     invoice.getWknd() +"</td><td>"+ invoice.getHuman() +"</td><td>"+ invoice.getPrise()+ "</td><td>"+
@@ -148,12 +161,13 @@ public class HelloController {
 
         }
 
-        System.out.println(allInvoices.iterator());                // failed:seems to find address of table instead of contents of table elements
         invoiceMap.addAttribute("userCount", allInvoices.size());  // works: posts the total number of table entries
         invoiceMap.addAttribute("owner", owner);                   // works: posts a string to the page
         invoiceMap.addAttribute("roleCall", theLot);               // works: Java solution
-        invoiceMap.addAttribute("boxedData", tabledInvoices);
+        invoiceMap.addAttribute("boxedData", tabledInvoices);      /** invoice list jsp output **/
         return "invoiceList";
     }
+
+
 
 }

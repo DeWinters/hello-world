@@ -8,7 +8,7 @@
 
     <table border="1">
         <tr>
-            <td>ID</td> <td>Client</td> <td>Chauffeur</td> <td>Collection Time</td> <td>Origin</td> <td>Delivery Time</td>
+            <td>ID</td> <td>Invoice#</td> <td>Client</td> <td>Chauffeur</td> <td>Collection Time</td> <td>Origin</td> <td>Delivery Time</td>
             <td>Destination</td> <td>Retour</td> <td>Wknd/Nuit</td> <td>Human</td> <td>Prise</td> <td>Interne</td>
             <td>Urgence</td> <td>Abusive</td>
         </tr>
