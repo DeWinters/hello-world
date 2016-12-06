@@ -27,16 +27,25 @@ public class LoginController {
         List<User> allUsers = jdbcTemplate.query("SELECT * FROM USER where user_name =?", new UserMapper(),username);
 
        if(allUsers.isEmpty()){
-           model.addAttribute("error", "Banjaxed");
+           model.addAttribute("error", "invalid Entry");
 
        } else if (allUsers.size() == 1){
            String pw = DigestUtils.md5Hex(password);
            String key = allUsers.get(0).getPassKey();
            if (pw.equalsIgnoreCase(key)){
+
+               String locationList = null;
+               JdbcTemplate jdbcTemp = new JdbcTemplate(dataSauce);
+               List<Location> allLocations = jdbcTemp.query("SELECT * FROM LOCATION", new LocationMapper());
+
+               for(Location location : allLocations){
+                   locationList += "<option value=\"" + location.getLocationId() + "\">" + location.getLocationName() + "</option>";
+               }
+               model.addAttribute("boxedLocations", locationList);
                return "invoice";
            }
        } else {
-           model.addAttribute("error", "multies!");
+           model.addAttribute("error", "Duplicate Match Error");
        }
 
         return "index";

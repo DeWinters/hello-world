@@ -14,8 +14,8 @@ public class InvoiceMapper implements ParameterizedRowMapper<Invoice> {
         invoice.setInvoiceNum(resultSet.getString("invoice_num"));
         invoice.setClient(resultSet.getString("client"));
         invoice.setDriver(resultSet.getString("driver"));
-        invoice.setOrigin(resultSet.getString("origin"));
-        invoice.setDestination(resultSet.getString("destination"));
+        invoice.setOrigin(resultSet.getInt("origin"));
+        invoice.setDestination(resultSet.getInt("destination"));
         invoice.setRetour(resultSet.getBoolean("retour"));
         invoice.setWknd(resultSet.getBoolean("wknd"));
         invoice.setHuman(resultSet.getBoolean("human"));
@@ -23,9 +23,11 @@ public class InvoiceMapper implements ParameterizedRowMapper<Invoice> {
         invoice.setInterne(resultSet.getBoolean("interne"));
         invoice.setUrgence(resultSet.getBoolean("urgence"));
         invoice.setAbusive(resultSet.getBoolean("abusive"));
-       // invoice.setDateStamp(resultSet.getDate("date_stamp"));
         invoice.setCollectionTime(resultSet.getTimestamp("collection_time"));
         invoice.setDeliveryTime(resultSet.getTimestamp("delivery_time"));
+        invoice.setDuration(resultSet.getString("duration"));
+        invoice.setDayTarif(resultSet.getBigDecimal("tarif_rate"));
+
         return invoice;
     }
 }

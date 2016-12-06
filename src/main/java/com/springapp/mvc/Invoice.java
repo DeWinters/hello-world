@@ -1,5 +1,6 @@
 package com.springapp.mvc;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -10,8 +11,8 @@ public class Invoice {
     private String invoice_num;
     private String client;
     private String driver;
-    private String origin;
-    private String destination;
+    private int origin;
+    private int destination;
     private Boolean retour;
     private Boolean wknd;
     private Boolean human;
@@ -22,15 +23,13 @@ public class Invoice {
 
     private Timestamp collectionTime;
     private Timestamp deliveryTime;
+    private String duration;
 
-    /** Time Lord's Dilemmas **/
-    //private Time collection;      //learn to collect Time, and append it to date_stamp ( date_stamp can be removed from database once this is operation if functional.)
-    //private Time delivery;        //test if delivery Time is earlier than collection Time, append delivery to date or date.Day++ as required
-    //private TimeSpan wait_time    //convert timespan string from view into a timespan variable
-    //private TimeSpan voyage = (delivery - collection) - wait_time
 
     /** Tarif Table Methods **/
-    private float tarif;    // Collect hourly tarif by comparing origin & destination to funwithspring.tarif (stop1 & stop2) tarif_rate
+    private BigDecimal dayTarif;    // Collect hourly tarif by comparing origin & destination to funwithspring.tarif (stop1 & stop2) tarif_rate
+
+    /** and then **/
     private String region;  // Also collect region from funwithspring.tarif region
 
 
@@ -46,11 +45,11 @@ public class Invoice {
     public String getDriver() { return driver; }
     public void setDriver(String driver) { this.driver = driver; }
 
-    public String getOrigin() { return origin; }
-    public void setOrigin(String origin) { this.origin = origin; }
+    public int getOrigin() { return origin; }
+    public void setOrigin(int origin) { this.origin = origin; }
 
-    public String getDestination() { return destination; }
-    public void setDestination(String destination) { this.destination = destination; }
+    public int getDestination() { return destination; }
+    public void setDestination(int destination) { this.destination = destination; }
 
     public Boolean getRetour() { return retour; }
     public void setRetour(Boolean retour) { this.retour = retour; }
@@ -78,6 +77,12 @@ public class Invoice {
 
     public Timestamp getDeliveryTime() { return deliveryTime; }
     public void setDeliveryTime( Timestamp deliveryTime) { this.deliveryTime = deliveryTime; }
+
+    public String getDuration(){ return duration; }
+    public void setDuration(String duration){ this.duration = duration; }
+
+    public BigDecimal getDayTarif(){ return dayTarif; }
+    public void setDayTarif(BigDecimal dayTarif){ this.dayTarif = dayTarif; }
 
 
     @Override

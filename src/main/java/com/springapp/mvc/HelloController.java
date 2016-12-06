@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -31,7 +32,8 @@ public class HelloController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)    /** counts page visits (possible brute-force prevention?) **/
     public String printWelcome(ModelMap model, HttpServletRequest request) {
-        //JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
+
+        /** counts page visits (possible brute-force prevention?) **/
         HttpSession session = request.getSession(true);
         Integer counter = (Integer) session.getAttribute("counter");
         if (counter != null) {
@@ -50,23 +52,20 @@ public class HelloController {
 
     @RequestMapping(value = "/confirmation", method = RequestMethod.POST)
     public String calculate(ModelMap model, @RequestParam("invoice_num") String invoice_num, @RequestParam("client") String client,
-                            @RequestParam("driver") String driver, @RequestParam("origin") String origin, @RequestParam("destination") String destination,
+                            @RequestParam("driver") String driver, @RequestParam("origin") int origin, @RequestParam("destination") int destination,
                             @RequestParam(value="retour", required=false) Boolean retour, @RequestParam( required=false, value="wknd") Boolean wknd,
                             @RequestParam(required=false, value="human") Boolean human, @RequestParam(required=false, value="prise") Boolean prise,
                             @RequestParam(required=false, value="interne") Boolean interne, @RequestParam(required=false, value="urgence") Boolean urgence,
                             @RequestParam(required=false, value="abusive") Boolean abusive, @RequestParam(value="date_stamp") String dateStamp,
                             @RequestParam(value="collection") String collection, @RequestParam(value="delivery") String delivery) {
 
-        if(wknd == null) { wknd = false; }      // checkbox=false normalizations
+        if(wknd == null) { wknd = false; }                           /** checkbox=false normalizations **/
         if(retour == null) { retour = false; }
         if(human == null) { human = false; }
         if(prise == null) { prise = false; }
         if(interne == null) { interne = false; }
         if(urgence == null) { urgence = false; }
         if(abusive == null) { abusive = false; }
-
-        System.out.println(dateStamp);                                                          // just date console
-        System.out.println(collection);                                                         // just time console
 
         String collectionStamp = dateStamp + " " + collection;       /** collection_time creation **/
         System.out.println(collectionStamp);
@@ -77,7 +76,7 @@ public class HelloController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        System.out.println(collectionTime);                                                     // collectionTime console
+        System.out.println(collectionTime);
 
         String deliveryStamp = dateStamp + " " + delivery;          /** delivery_time creation **/
         System.out.println(deliveryStamp);
@@ -87,25 +86,36 @@ public class HelloController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        System.out.println(deliveryTime);                                                       // deliveryTime console
+        System.out.println(deliveryTime);
 
-        /** Evaluation of deliveryTime vs  collectionTime for valid timespan probably goes here **/
-        long durationLong = deliveryTime.getTime() - collectionTime.getTime();                  // Temporary DB millisecond storage.
-        //System.out.println(durationLong);                                                           // duration console
-       // Date voyage = new Date(durationLong);
-       // String trip = format.format(voyage);
-       // System.out.println(trip);                                                                   // trip console
+        String duration = null;                                     /** Voyage duration calculation **/
+        if(collectionTime != null && deliveryTime != null) {
+            DurationCreator voyage = new DurationCreator(collectionTime, deliveryTime);
+            duration = voyage.ToString();
+        }
 
-        DurationCreator current = new DurationCreator(collectionTime, deliveryTime);
-        //String voyageLength = current.Voyage(collectionTime, deliveryTime);
-        System.out.println(current.ToString());
+        JdbcTemplate jdbcTarif = new JdbcTemplate(dataSauce);       /** Tariff selection **/
+        List<Route> allRoutes = jdbcTarif.query("SELECT * FROM ROUTE WHERE (id_origin=?) AND(id_destined=?)", new RouteMapper(), origin, destination);
+        BigDecimal tarifRate =null;
+        if(allRoutes.size() == 1){
+            /** set tarif rate (based on dayRate for now) **/
+            for(Route theRoute : allRoutes){
+                tarifRate = theRoute.getDayTarif();
+            }
+        }
+        else if(allRoutes.size() > 1 ){ /** do some error handling **/ }
+        else if (allRoutes.size() <0){  /** Report No-Tarif-Set  **/ }
 
 
-        /** Send invoice to the database **/
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
-        jdbcTemplate.update("INSERT INTO invoice(invoice_num,client,driver,origin,destination,retour,wknd,human,prise," +
-                "interne,urgence,abusive,collection_time,delivery_time,duration) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", invoice_num, client, driver,
-                origin, destination, retour, wknd, human, prise, interne, urgence, abusive, collectionTime, deliveryTime, durationLong);
+
+
+
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);    /** Send compiled invoice data to the database **/
+        jdbcTemplate.update("INSERT INTO invoice(invoice_num,client,driver,origin,destination,retour,wknd,human," +
+                                                "prise,interne,urgence,abusive,collection_time,delivery_time,duration,tarif_rate)" +
+                                                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", invoice_num, client, driver,
+                                                origin, destination, retour, wknd, human, prise, interne, urgence,
+                                                abusive, collectionTime, deliveryTime, duration, tarifRate);
         model.addAttribute("procedure", confirm);
         return "confirmation";
     }
@@ -116,49 +126,44 @@ public class HelloController {
         return listOutput(model);
     }
 
+
     @RequestMapping(value = "/invoiceList", method = RequestMethod.GET)
     public String listMembersGet(ModelMap model) {
       return listOutput(model);
     }
 
 
-    private String listOutput(ModelMap invoiceMap){
+    private String listOutput(ModelMap invoiceMap){                             /** Collect and list all invoices **/
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
         List<Invoice> allInvoices = jdbcTemplate.query("SELECT * FROM invoice", new InvoiceMapper());
 
-        String theLot = "";                                 // jsp invoice string list
-        String tabledInvoices = "";                         // jsp invoice list table builder;
+        String theLot = null;                                 // jsp invoice string list
+        String tabledInvoices = null;                         // jsp invoice list table builder;
         for (Invoice invoice : allInvoices) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.ENGLISH);
+
             String collectionString;
-            if (invoice.getCollectionTime() == null) {
-                collectionString = "UnDated";
-            } else {
-                collectionString = format.format(invoice.getCollectionTime());
-            }
+            if (invoice.getCollectionTime() == null) { collectionString = "--:--"; }
+            else { collectionString = format.format(invoice.getCollectionTime()); }
 
-            String deliveryString =null;
-            if (invoice.getDeliveryTime() == null) {
-                collectionString = "UnDated";
-            } else {
-                deliveryString = format.format(invoice.getDeliveryTime());
-            }
+            String deliveryString;
+            if (invoice.getDeliveryTime() == null) { deliveryString = "--:--"; }
+            else { deliveryString = format.format(invoice.getDeliveryTime()); }
 
-            /** console output of all invoices */
+            /** console output of all invoices **/
             System.out.println(invoice.getId() + "\t" + invoice.getInvoiceNum() + "\t" + invoice.getClient() + "\t" +
                     invoice.getOrigin() + "\t" +  collectionString + "\t" + invoice.getDestination() + "\t" +
-                    invoice.getDeliveryTime() + "\t" + invoice.getRetour() + "\t" + invoice.getWknd() + "\t" +
+                    deliveryString + "\t" + invoice.getRetour() + "\t" + invoice.getWknd() + "\t" +
                     invoice.getHuman() + "\t" + invoice.getPrise() + "\t" + invoice.getInterne() + "\t" +
                     invoice.getUrgence() + "\t" + invoice.getAbusive());
-
 
             /** Tabled jsp output of all invoices **/
             tabledInvoices +="<tr><td>" + invoice.getId() +"</td><td>"+ invoice.getInvoiceNum() +"</td><td>"+ invoice.getClient() +"</td><td>"+
                     invoice.getDriver() +"</td><td>"+ collectionString + "</td><td>" +  invoice.getOrigin() + "</td><td>"+
                     deliveryString +"</td><td>"+ invoice.getDestination() +"</td><td>"+ invoice.getRetour()+ "</td><td>"+
                     invoice.getWknd() +"</td><td>"+ invoice.getHuman() +"</td><td>"+ invoice.getPrise()+ "</td><td>"+
-                    invoice.getInterne() +"</td><td>"+ invoice.getUrgence() +"</td><td>"+ invoice.getAbusive() +"</td></tr>";
-
+                    invoice.getInterne() +"</td><td>"+ invoice.getUrgence() +"</td><td>"+ invoice.getAbusive() +"</td><td>"+
+                    invoice.getDayTarif() +"</td><td>"+ invoice.getDuration() +"</td></tr>";
         }
 
         invoiceMap.addAttribute("userCount", allInvoices.size());  // works: posts the total number of table entries
@@ -167,7 +172,5 @@ public class HelloController {
         invoiceMap.addAttribute("boxedData", tabledInvoices);      /** invoice list jsp output **/
         return "invoiceList";
     }
-
-
 
 }

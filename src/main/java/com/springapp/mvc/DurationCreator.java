@@ -22,7 +22,6 @@ public class DurationCreator {
             different += 86400000;
             elapsedHours = different / hoursInMilli;
         }
-
         different = different % hoursInMilli;
         elapsedMinutes = different / minutesInMilli;
     }
@@ -30,12 +29,8 @@ public class DurationCreator {
     public long getElapsedHours() { return elapsedHours; }
     public long getElapsedMinutes() { return elapsedMinutes; }
 
-
-
-
     public String ToString(){
         String duration;
-        //duration = elapsedDays +"Days "+ elapsedHours +"Hours "+ elapsedMinutes +"Minutes";
         duration = elapsedHours +"Hours "+ elapsedMinutes +"Minutes";
         return duration;
     }
