@@ -30,9 +30,8 @@ public class HelloController {
     String confirm = "";
     long hack = 0;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)    /** counts page visits (possible brute-force prevention?) **/
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public String printWelcome(ModelMap model, HttpServletRequest request) {
-
         /** counts page visits (possible brute-force prevention?) **/
         HttpSession session = request.getSession(true);
         Integer counter = (Integer) session.getAttribute("counter");
@@ -89,33 +88,70 @@ public class HelloController {
         System.out.println(deliveryTime);
 
         String duration = null;                                     /** Voyage duration calculation **/
+        DurationCreator voyage =null;
         if(collectionTime != null && deliveryTime != null) {
-            DurationCreator voyage = new DurationCreator(collectionTime, deliveryTime);
+            voyage = new DurationCreator(collectionTime, deliveryTime);
             duration = voyage.ToString();
-        }
+        }                                                           // Waiting time deduction uncalculated
 
         JdbcTemplate jdbcTarif = new JdbcTemplate(dataSauce);       /** Tariff selection **/
         List<Route> allRoutes = jdbcTarif.query("SELECT * FROM ROUTE WHERE (id_origin=?) AND(id_destined=?)", new RouteMapper(), origin, destination);
         BigDecimal tarifRate =null;
         if(allRoutes.size() == 1){
-            /** set tarif rate (based on dayRate for now) **/
-            for(Route theRoute : allRoutes){
+            for(Route theRoute : allRoutes){                        // Setting tariff to day rate only for now
                 tarifRate = theRoute.getDayTarif();
             }
+        }else if(allRoutes.size() > 1 ){                            // do some error handling
+        }else if (allRoutes.size() <0 ){                            // Report No-Tarif-Set  **/
         }
-        else if(allRoutes.size() > 1 ){ /** do some error handling **/ }
-        else if (allRoutes.size() <0){  /** Report No-Tarif-Set  **/ }
+
+        BigDecimal fare = voyage.Calculator(tarifRate);             /** Fare creation (tarifRate * duration) **/
+
+        BigDecimal taxRate;                                         /** Select Tax Rate **/
+        double rate;
+        int SOME_CONDITIONS = 2;                                    // Need client guidance regarding conditions
+        switch(SOME_CONDITIONS){
+            case 1:
+                taxRate = new BigDecimal(0.021);                // Change to db reference later
+                rate = 2.1;
+                break;
+            case 2:
+                taxRate = new BigDecimal(0.1);
+                rate = 10;
+                break;
+            case 3:
+                taxRate = new BigDecimal(0.2);
+                rate = 20;
+                break;
+            default:
+                taxRate = BigDecimal.ZERO;
+                rate = 0.0;
+                break;
+        }
+
+        BigDecimal taxes;                                           /** Calculate Taxes **/
+        if(fare != BigDecimal.ZERO){
+            taxes = taxRate.multiply(fare);
+        }else {
+            taxes = BigDecimal.ZERO;
+        }
 
 
 
-
+        /** Handle Nuit/Wknd implications **/
+        /** Handle Aller/retour implications **/
+        /** Handle Human **/
+        /** Handle Prise en charge **/
+        /** Handle Interne **/
+        /** Handle Urgence **/
+        /** Handle Abbusive **/
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);    /** Send compiled invoice data to the database **/
         jdbcTemplate.update("INSERT INTO invoice(invoice_num,client,driver,origin,destination,retour,wknd,human," +
-                                                "prise,interne,urgence,abusive,collection_time,delivery_time,duration,tarif_rate)" +
-                                                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", invoice_num, client, driver,
+                                                "prise,interne,urgence,abusive,collection_time,delivery_time,duration,tarif_rate,fare,tax_rate,tax)" +
+                                                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", invoice_num, client, driver,
                                                 origin, destination, retour, wknd, human, prise, interne, urgence,
-                                                abusive, collectionTime, deliveryTime, duration, tarifRate);
+                                                abusive, collectionTime, deliveryTime, duration, tarifRate, fare, rate, taxes);
         model.addAttribute("procedure", confirm);
         return "confirmation";
     }
@@ -133,11 +169,11 @@ public class HelloController {
     }
 
 
-    private String listOutput(ModelMap invoiceMap){                             /** Collect and list all invoices **/
+    private String listOutput(ModelMap invoiceMap){                 /** Collect and list all invoices **/
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
         List<Invoice> allInvoices = jdbcTemplate.query("SELECT * FROM invoice", new InvoiceMapper());
 
-        String theLot = null;                                 // jsp invoice string list
+        //String theLot = null;                                 // jsp invoice string list
         String tabledInvoices = null;                         // jsp invoice list table builder;
         for (Invoice invoice : allInvoices) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.ENGLISH);
@@ -150,14 +186,14 @@ public class HelloController {
             if (invoice.getDeliveryTime() == null) { deliveryString = "--:--"; }
             else { deliveryString = format.format(invoice.getDeliveryTime()); }
 
-            /** console output of all invoices **/
+                                                                    /** console output string of all invoices **/
             System.out.println(invoice.getId() + "\t" + invoice.getInvoiceNum() + "\t" + invoice.getClient() + "\t" +
                     invoice.getOrigin() + "\t" +  collectionString + "\t" + invoice.getDestination() + "\t" +
                     deliveryString + "\t" + invoice.getRetour() + "\t" + invoice.getWknd() + "\t" +
                     invoice.getHuman() + "\t" + invoice.getPrise() + "\t" + invoice.getInterne() + "\t" +
                     invoice.getUrgence() + "\t" + invoice.getAbusive());
 
-            /** Tabled jsp output of all invoices **/
+                                                                    /** jsp tabled output of all invoices **/
             tabledInvoices +="<tr><td>" + invoice.getId() +"</td><td>"+ invoice.getInvoiceNum() +"</td><td>"+ invoice.getClient() +"</td><td>"+
                     invoice.getDriver() +"</td><td>"+ collectionString + "</td><td>" +  invoice.getOrigin() + "</td><td>"+
                     deliveryString +"</td><td>"+ invoice.getDestination() +"</td><td>"+ invoice.getRetour()+ "</td><td>"+
@@ -166,9 +202,9 @@ public class HelloController {
                     invoice.getDayTarif() +"</td><td>"+ invoice.getDuration() +"</td></tr>";
         }
 
-        invoiceMap.addAttribute("userCount", allInvoices.size());  // works: posts the total number of table entries
-        invoiceMap.addAttribute("owner", owner);                   // works: posts a string to the page
-        invoiceMap.addAttribute("roleCall", theLot);               // works: Java solution
+        invoiceMap.addAttribute("userCount", allInvoices.size());  // posts the total number of table entries
+        invoiceMap.addAttribute("owner", owner);                   // posts owner name for footer
+        //invoiceMap.addAttribute("roleCall", theLot);               // works: Java solution
         invoiceMap.addAttribute("boxedData", tabledInvoices);      /** invoice list jsp output **/
         return "invoiceList";
     }

@@ -3,6 +3,7 @@ package com.springapp.mvc;
 /**
  * Created by Administrator on 01/12/2016.
  */
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,6 +34,17 @@ public class DurationCreator {
         String duration;
         duration = elapsedHours +"Hours "+ elapsedMinutes +"Minutes";
         return duration;
+    }
+
+    public float InMinutes(){
+        float inMinutes = getElapsedMinutes() + (getElapsedHours() * 60);
+        return inMinutes;
+    }
+
+    public BigDecimal Calculator(BigDecimal tariff){
+        BigDecimal calculation = new BigDecimal(InMinutes() / 60);
+        calculation = calculation.multiply(tariff);
+        return calculation;
     }
 
     // Special thanks to www.mykong.com for the formula for converting milliseconds
