@@ -32,7 +32,7 @@ public class DurationCreator {
 
     public String ToString(){
         String duration;
-        duration = elapsedHours +"Hours "+ elapsedMinutes +"Minutes";
+        duration = elapsedHours +"Hr "+ elapsedMinutes +"Mins";
         return duration;
     }
 

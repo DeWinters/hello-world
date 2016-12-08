@@ -20,22 +20,11 @@
                 <input type="date" name="date_stamp" class="bubble"> :Date <br>
 
                 <select name="client" id="client" class="bubble">
-                    <option selected="selected">CSO Stg</option>
-                    <option>HUS</option>
-                    <option>Adassa</option>
-                    <option>PUI GCSM</option>
-                    <option>Diac</option>
-                    <option>EFS</option>
-                    <option>Interne</option>
-                    <option>Neant</option>
+                    ${boxedClients}
                 </select> :Client <br>
 
                 <select name="driver" id="driver" class="bubble">
-                    <option>Albisser Pierre-Jean</option>
-                    <option>Fehr Romain</option>
-                    <option>Froehlicher Brandon</option>
-                    <option selected="selected">Mege Charley</option>
-                    <option>Mercier Marine</option>
+                    ${boxedDrivers}
                 </select> :Chauffeur <br>
 
                 <br>
@@ -47,19 +36,7 @@
 
                 <br>
                 <select name="wait" id="wait">
-                    <option selected="selected"> None</option>
-                    <option>15min</option>
-                    <option>30min</option>
-                    <option>45min</option>
-                    <option>1hr</option>
-                    <option>1hr 15min</option>
-                    <option>1hr 30min</option>
-                    <option>1hr 45min</option>
-                    <option>2hr</option>
-                    <option>2hr 15min</option>
-                    <option>2hr 30min</option>
-                    <option>2hr 45min</option>
-                    <option>3hr</option>
+                    ${boxedWaits}
                 </select> :Waiting Time<br>
 
                 <br>

@@ -9,8 +9,8 @@ public class Invoice {
 
     private long id;
     private String invoice_num;
-    private String client;
-    private String driver;
+    private int client;
+    private int driver;
     private int origin;
     private int destination;
     private Boolean retour;
@@ -20,17 +20,19 @@ public class Invoice {
     private Boolean interne;
     private Boolean urgence;
     private Boolean abusive;
-
     private Timestamp collectionTime;
     private Timestamp deliveryTime;
     private String duration;
+    private BigDecimal dayTarif;
 
-
-    /** Tarif Table Methods **/
-    private BigDecimal dayTarif;    // Collect hourly tarif by comparing origin & destination to funwithspring.tarif (stop1 & stop2) tarif_rate
+    private BigDecimal taxRate;
+    private BigDecimal taxes;
+    private BigDecimal fare;
+    private long waitMinutes;
+    private BigDecimal waitFee;
 
     /** and then **/
-    private String region;  // Also collect region from funwithspring.tarif region
+    private String region;  // collect region from ???
 
 
     public long getId() { return id; }
@@ -39,11 +41,11 @@ public class Invoice {
     public String getInvoiceNum() { return invoice_num; }
     public void setInvoiceNum(String invoice_num) {this.invoice_num = invoice_num; }
 
-    public String getClient() { return client; }
-    public void setClient(String client) { this.client = client; }
+    public int getClient() { return client; }
+    public void setClient(int client) { this.client = client; }
 
-    public String getDriver() { return driver; }
-    public void setDriver(String driver) { this.driver = driver; }
+    public int getDriver() { return driver; }
+    public void setDriver(int driver) { this.driver = driver; }
 
     public int getOrigin() { return origin; }
     public void setOrigin(int origin) { this.origin = origin; }
@@ -83,6 +85,21 @@ public class Invoice {
 
     public BigDecimal getDayTarif(){ return dayTarif; }
     public void setDayTarif(BigDecimal dayTarif){ this.dayTarif = dayTarif; }
+
+    public BigDecimal getTaxRate(){ return taxRate; }
+    public void setTaxRate(BigDecimal taxRate){ this.taxRate = taxRate; }
+
+    public BigDecimal getTaxes(){ return taxes; }
+    public void setTaxes(BigDecimal taxes){ this.taxes = taxes; }
+
+    public BigDecimal getFare(){ return fare; }
+    public void setFare(BigDecimal fare){ this.fare = fare; }
+
+    public long getWaitId(){ return waitMinutes; }
+    public void setWaitId(long waitMinutes){ this.waitMinutes = waitMinutes; }
+
+    public BigDecimal getWaitFee(){ return waitFee; }
+    public void setWaitFee(BigDecimal waitFee){ this.waitFee = waitFee; }
 
 
     @Override

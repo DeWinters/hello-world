@@ -35,13 +35,39 @@ public class LoginController {
            if (pw.equalsIgnoreCase(key)){
 
                String locationList = null;
-               JdbcTemplate jdbcTemp = new JdbcTemplate(dataSauce);
-               List<Location> allLocations = jdbcTemp.query("SELECT * FROM LOCATION", new LocationMapper());
-
+               JdbcTemplate jdbcLocation = new JdbcTemplate(dataSauce);
+               List<Location> allLocations = jdbcLocation.query("SELECT * FROM LOCATION", new LocationMapper());
                for(Location location : allLocations){
                    locationList += "<option value=\"" + location.getLocationId() + "\">" + location.getLocationName() + "</option>";
                }
                model.addAttribute("boxedLocations", locationList);
+
+               String clientList = null;
+               JdbcTemplate jdbcClient = new JdbcTemplate(dataSauce);
+               List<Client> allClients = jdbcClient.query("SELECT * FROM CLIENT", new ClientMapper());
+               for(Client client : allClients){
+                   clientList += "<option value=\"" + client.getId() + "\">" + client.getName() + "</option>";
+               }
+               model.addAttribute("boxedClients", clientList);
+
+
+               String driverList = null;
+               JdbcTemplate jdbcDriver = new JdbcTemplate(dataSauce);
+               List<Driver> allDrivers = jdbcDriver.query("SELECT * FROM DRIVER", new DriverMapper());
+               for(Driver driver : allDrivers){
+                   driverList += "<option value=\"" + driver.getId() + "\">" + driver.getName() + "</option>";
+               }
+               model.addAttribute("boxedDrivers", driverList);
+
+
+               String waitList = null;
+               JdbcTemplate jdbcWait = new JdbcTemplate(dataSauce);
+               List<Wait> allWaits = jdbcWait.query("SELECT * FROM WAIT", new WaitMapper());
+               for(Wait wait : allWaits){
+                   waitList += "<option value=\"" + wait.getId() + "\">" + wait.getName() + "</option>";
+               }
+               model.addAttribute("boxedWaits", waitList);
+
                return "invoice";
            }
        } else {

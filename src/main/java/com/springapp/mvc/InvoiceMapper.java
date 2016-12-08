@@ -12,8 +12,8 @@ public class InvoiceMapper implements ParameterizedRowMapper<Invoice> {
     public Invoice mapRow(ResultSet resultSet, int i) throws SQLException {Invoice invoice = new Invoice();
         invoice.setId(resultSet.getLong("id"));
         invoice.setInvoiceNum(resultSet.getString("invoice_num"));
-        invoice.setClient(resultSet.getString("client"));
-        invoice.setDriver(resultSet.getString("driver"));
+        invoice.setClient(resultSet.getInt("client"));
+        invoice.setDriver(resultSet.getInt("driver"));
         invoice.setOrigin(resultSet.getInt("origin"));
         invoice.setDestination(resultSet.getInt("destination"));
         invoice.setRetour(resultSet.getBoolean("retour"));
@@ -27,7 +27,11 @@ public class InvoiceMapper implements ParameterizedRowMapper<Invoice> {
         invoice.setDeliveryTime(resultSet.getTimestamp("delivery_time"));
         invoice.setDuration(resultSet.getString("duration"));
         invoice.setDayTarif(resultSet.getBigDecimal("tarif_rate"));
-
+        invoice.setTaxRate(resultSet.getBigDecimal("tax_rate"));
+        invoice.setTaxes(resultSet.getBigDecimal("tax"));
+        invoice.setFare(resultSet.getBigDecimal("fare"));
+        invoice.setWaitId(resultSet.getLong("wait"));
+        invoice.setWaitFee(resultSet.getBigDecimal("waitFee"));
         return invoice;
     }
 }
