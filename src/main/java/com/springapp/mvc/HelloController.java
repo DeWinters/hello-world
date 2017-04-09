@@ -54,8 +54,8 @@ public class HelloController {
                             @RequestParam("client") int client, @RequestParam("driver") int driver,
                             @RequestParam("origin") int origin, @RequestParam("destination") int destination,
                             @RequestParam("wait") int wait,
-                            @RequestParam(value="retour", required=false) Boolean retour,
-                            @RequestParam( required=false, value="wknd") Boolean wknd,
+                            @RequestParam(required=false, value="retour") Boolean retour,
+                            @RequestParam(required=false, value="wknd") Boolean wknd,
                             @RequestParam(required=false, value="human") Boolean human,
                             @RequestParam(required=false, value="prise") Boolean prise,
                             @RequestParam(required=false, value="interne") Boolean interne,
@@ -65,13 +65,35 @@ public class HelloController {
                             @RequestParam(value="collection") String collection,
                             @RequestParam(value="delivery") String delivery) {
 
-        if(wknd == null) { wknd = false; }                           /** checkbox=false normalizations **/
-        if(retour == null) { retour = false; }
-        if(human == null) { human = false; }
-        if(prise == null) { prise = false; }
-        if(interne == null) { interne = false; }
-        if(urgence == null) { urgence = false; }
-        if(abusive == null) { abusive = false; }
+        if (wknd == null) {
+            wknd = false;
+        }                           /** checkbox=false normalizations **/
+        if (retour == null) {
+            retour = false;
+        }
+        if (human == null) {
+            human = false;
+        }
+        if (prise == null) {
+            prise = false;
+        }
+        if (interne == null) {
+            interne = false;
+        }
+        if (urgence == null) {
+            urgence = false;
+        }
+        if (abusive == null) {
+            abusive = false;
+        }
+
+        /** Handle Nuit/Wknd implications **/
+        /** Handle Aller/retour implications **/
+        /** Handle Human **/
+        /** Handle Prise en charge **/
+        /** Handle Interne **/
+        /** Handle Urgence **/
+        /** Handle Abbusive **/
 
         String collectionStamp = dateStamp + " " + collection;       /** collection_time creation **/
         System.out.println(collectionStamp);
@@ -95,102 +117,94 @@ public class HelloController {
         System.out.println(deliveryTime);
 
         String duration = null;                                     /** Voyage duration calculation **/
-        DurationCreator voyage =null;
-        if(collectionTime != null && deliveryTime != null) {
+        DurationCreator voyage = null;
+        if (collectionTime != null && deliveryTime != null) {
             voyage = new DurationCreator(collectionTime, deliveryTime);
             duration = voyage.ToString();
-        }                                                           // Waiting time deduction uncalculated
+        }                                                           // Waiting time not deducted
 
         JdbcTemplate jdbcTarif = new JdbcTemplate(dataSauce);       /** Tariff selection **/
         List<Route> allRoutes = jdbcTarif.query("SELECT * FROM ROUTE WHERE (id_origin=?) AND(id_destined=?)", new RouteMapper(), origin, destination);
-        BigDecimal tarifRate =null;
-        if(allRoutes.size() == 1){
-            for(Route theRoute : allRoutes){                        // Setting tariff to day rate only for now
-                tarifRate = theRoute.getDayTarif();
+        BigDecimal tarifRate = null;
+        if (allRoutes.size() == 1) {
+            for (Route theRoute : allRoutes) {                        // Setting tariff to day rate only for now
+                if (wknd == true) {
+                    tarifRate = theRoute.getNightTarif();
+                } else {                                              // these columns are identical
+                    tarifRate = theRoute.getDayTarif();
+                }
             }
-        }else if(allRoutes.size() > 1 ){                            // do some error handling
-        }else if (allRoutes.size() <0 ){                            // Report No-Tarif-Set  **/
+        } else if (allRoutes.size() > 1) {                            // do some error handling
+        } else if (allRoutes.size() < 0) {                            // Report No-Tarif-Set  **/
         }
-
 
         JdbcTemplate jdbcWait = new JdbcTemplate(dataSauce);        /** Waiting selections **/
         List<Wait> allWaits = jdbcWait.query("SELECT * FROM WAIT WHERE (wait_id=?)", new WaitMapper(), wait);
         BigDecimal waitRate = null;
-        if(allWaits.size() == 1){
-            for(Wait theWait : allWaits){
-                 if(wknd == true) {
+        if (allWaits.size() == 1) {
+            for (Wait theWait : allWaits) {
+                if (wknd == true) {
                     waitRate = theWait.getDayRate();
-                 } else if(wknd == false){
+                } else if (wknd == false) {
                     waitRate = theWait.getNightRate();
-                 } else {
-                     waitRate = BigDecimal.ZERO;
-                 }
+                } else {
+                    waitRate = BigDecimal.ZERO;
+                }
             }
-        }else if(allWaits.size() > 1 ){                            // do some error handling
-        }else if (allWaits.size() <0 ){                            // Report No-Wait-Set  **/
+        } else if (allWaits.size() > 1) {                             // do some error handling
+        } else if (allWaits.size() < 0) {                             // Report No-Wait-Set  **/
+
+
+            BigDecimal fare = voyage.Calculator(tarifRate);             /** Fare creation (tarifRate * duration) **/
+
+            fare = fare.add(waitRate);
+
+            BigDecimal taxRate;                                         /** Select Tax Rate **/
+            int SOME_CONDITIONS = 2;                                    // Need client guidance regarding tax conditions
+            switch (SOME_CONDITIONS) {
+                case 1:
+                    taxRate = new BigDecimal(0.021);                // Change to db reference later
+                    break;
+                case 2:
+                    taxRate = new BigDecimal(0.1);
+                    break;
+                case 3:
+                    taxRate = new BigDecimal(0.2);
+                    break;
+                default:
+                    taxRate = BigDecimal.ZERO;
+                    break;
+            }
+            BigDecimal taxType = new BigDecimal(100);
+            taxType = taxType.multiply(taxRate);
+
+            BigDecimal taxes;                                           /** Calculate Taxes **/
+            if (fare != BigDecimal.ZERO) {
+                taxes = taxRate.multiply(fare);
+            } else {
+                taxes = BigDecimal.ZERO;
+            }
+
+
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);    /** Send compiled invoice data to the database **/
+            jdbcTemplate.update("INSERT INTO invoice(invoice_num,client,driver,origin,destination,retour,wknd,human," +
+                            "prise,interne,urgence,abusive,collection_time,delivery_time,duration,tarif_rate,fare,tax_rate," +
+                            "tax,wait_id,wait_fee)" +
+                            "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", invoice_num, client, driver,
+                    origin, destination, retour, wknd, human, prise, interne, urgence,
+                    abusive, collectionTime, deliveryTime, duration, tarifRate, fare, taxType, taxes, wait, waitRate);
+            model.addAttribute("procedure", confirm);
         }
-
-        BigDecimal fare = voyage.Calculator(tarifRate);             /** Fare creation (tarifRate * duration) **/
-
-        fare = fare.add(waitRate);
-
-
-        BigDecimal taxRate;                                         /** Select Tax Rate **/
-        int SOME_CONDITIONS = 2;                                    // Need client guidance regarding conditions
-        switch(SOME_CONDITIONS){
-            case 1:
-                taxRate = new BigDecimal(0.021);                // Change to db reference later
-                break;
-            case 2:
-                taxRate = new BigDecimal(0.1);
-                break;
-            case 3:
-                taxRate = new BigDecimal(0.2);
-                break;
-            default:
-                taxRate = BigDecimal.ZERO;
-                break;
-        }
-        BigDecimal taxType = new BigDecimal(100);
-        taxType = taxType.multiply(taxRate);
-
-        BigDecimal taxes;                                           /** Calculate Taxes **/
-        if(fare != BigDecimal.ZERO){
-            taxes = taxRate.multiply(fare);
-        }else {
-            taxes = BigDecimal.ZERO;
-        }
-
-
-        /** Handle Nuit/Wknd implications **/
-        /** Handle Aller/retour implications **/
-        /** Handle Human **/
-        /** Handle Prise en charge **/
-        /** Handle Interne **/
-        /** Handle Urgence **/
-        /** Handle Abbusive **/
-
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);    /** Send compiled invoice data to the database **/
-        jdbcTemplate.update("INSERT INTO invoice(invoice_num,client,driver,origin,destination,retour,wknd,human," +
-                                                "prise,interne,urgence,abusive,collection_time,delivery_time,duration,tarif_rate,fare,tax_rate,tax,wait_id,wait_fee)" +
-                                                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", invoice_num, client, driver,
-                                                origin, destination, retour, wknd, human, prise, interne, urgence,
-                                                abusive, collectionTime, deliveryTime, duration, tarifRate, fare, taxType, taxes, wait, waitRate);
-        model.addAttribute("procedure", confirm);
         return "confirmation";
     }
 
 
-    @RequestMapping(value = "/invoiceList", method = RequestMethod.POST)
-    public String listMembersPost(ModelMap model) {
-        return listOutput(model);
-    }
 
 
-    @RequestMapping(value = "/invoiceList", method = RequestMethod.GET)
-    public String listMembersGet(ModelMap model) {
-      return listOutput(model);
-    }
+
+
+
+
 
 
     private String listOutput(ModelMap invoiceMap){                 /** Collect and list all invoices **/
@@ -209,14 +223,14 @@ public class HelloController {
             if (invoice.getDeliveryTime() == null) { deliveryString = "--:--"; }
             else { deliveryString = format.format(invoice.getDeliveryTime()); }
 
-                                                                    /** console output string of all invoices **/
+            /** console output string of all invoices **/
             System.out.println(invoice.getId() + "\t" + invoice.getInvoiceNum() + "\t" + invoice.getClient() + "\t" +
                     invoice.getOrigin() + "\t" +  collectionString + "\t" + invoice.getDestination() + "\t" +
                     deliveryString + "\t" + invoice.getRetour() + "\t" + invoice.getWknd() + "\t" +
                     invoice.getHuman() + "\t" + invoice.getPrise() + "\t" + invoice.getInterne() + "\t" +
                     invoice.getUrgence() + "\t" + invoice.getAbusive());
 
-                                                                    /** jsp tabled output of all invoices **/
+            /** jsp tabled output of all invoices **/
             tabledInvoices +="<tr><td>" + invoice.getId() +"</td><td>"+ invoice.getInvoiceNum() +"</td><td>"+ invoice.getClient() +"</td><td>"+
                     invoice.getDriver() +"</td><td>"+ collectionString + "</td><td>" +  invoice.getOrigin() + "</td><td>"+
                     deliveryString +"</td><td>"+ invoice.getDestination() +"</td><td>"+ invoice.getRetour()+ "</td><td>"+
