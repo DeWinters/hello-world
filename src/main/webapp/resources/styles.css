@@ -22,7 +22,15 @@ background-color: blue;
     border: 1px solid black;
 }
 
-#header {
+#dataframe{
+    width: 600px;
+    margin: 2px;
+    padding: 5px;
+    background-color: lightblue;
+    border: 1px solid black;
+}
+
+.header {
     text-align: center;
     color: blue;
     background-color: yellow;
@@ -46,4 +54,15 @@ background-color: blue;
 .bubble {
 
     font-size: 24px;
+}
+
+
+
+#guestlog{
+    border: solid black 1px;
+}
+
+.ticket{
+    border: solid 1px black;
+    background-color: lightblue;
 }

@@ -6,12 +6,16 @@ package com.springapp.mvc;
 public class Client {
 
     private long id;
-    private String name;
+    private String firstName;
+    private String lastName;
 
     public long getId(){ return id;}
     public void setId(long id){ this.id = id;}
 
-    public String getName(){ return name;}
-    public void setName(String name){ this.name = name;}
+    public String getFirstName(){ return firstName;}
+    public void setFirstName(String name){ this.firstName = name;}
+
+    public String getLastName(){ return lastName;}
+    public void setLastName(String name){ this.lastName = name;}
 
 }

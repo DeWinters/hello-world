@@ -6,20 +6,50 @@
     <head>
         <title>LoginPage</title>
         <link rel="stylesheet" type="text/css" href="resources/styles.css"/>
-
+        <script
+                src="https://code.jquery.com/jquery-3.2.1.min.js"
+                integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+                crossorigin="anonymous">
+        </script>
+        <!--
+        <script>
+            $.post( "/insertGuest", { name: "John", time: "2pm" })
+                .done(function( data ) {
+                    alert( "Data Loaded: " + data );
+                });
+        </script>
+        -->
     </head>
 
 <body>
-    <div id="loginframe">
-        <div id="header">
-          <h1><em>MAS</em></h1>
+    <div id="App">
+        <div id="loginframe">
+            <div class="header">
+              <h1><em>MAS</em></h1>
+            </div>
+
+            <h3>Login page</h3>
+            <form action="/insertGuest" method="post">
+                FirstName: <input type="text" name="firstname" class="bubble"><br>
+                LastName: <input type="text" name="lastname" class="bubble"><br>
+                <input type="submit" value="Login" class="bubble">
+            </form>
         </div>
-        <h3>Login page</h3>
-        <form action="/login" method="post">
-            Username: <input type="text" name="username" class="bubble"><br>
-            Password: <input type="password" name="password" class="bubble"><br>
-            <input type="submit" value="Login" class="bubble">
-        </form>
+
+        <div id="dataframe">
+            <div class="header">
+                <h1>Database</h1>
+            </div>
+
+            <div>
+                ${guestlist}
+
+            </div>
+        </div>
+
+        <div>
+            ${jsonlist}
+        </div>
     </div>
 
     ${error}
