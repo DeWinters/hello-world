@@ -1,5 +1,6 @@
 package com.springapp.mvc;
 
+import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -10,28 +11,34 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * Created by Administrator on 03/09/2017.
+ * Created by Administrator on 07/09/2017.
  */
 @Service
-public class GuestLog {
+public class DAO {
 
     @Autowired
     private DriverManagerDataSource dataSauce;
 
-    public List<Client> getLogAsList() {
+    public String getLogAsString() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
         List<Client> guestLog = jdbcTemplate.query("SELECT * FROM guests", new ClientMapper());
-        return guestLog;
-    }
 
-    public String getLogAsString() {
-        String allGuests ="blah";
+        String allGuests= "";
+        for(Client guest : guestLog){
+            allGuests += "<option class=\"ticket\" value=\"" + guest.getId() + "\">" +
+                    guest.getId() +
+                    guest.getFirstName() +
+                    guest.getLastName() + "<br/>" +
+                    "</option>";
+        }
         return allGuests;
     }
 
     public void insertNew(String firstName, String lastName){
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);    /** Send compiled invoice data to the database **/
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
         jdbcTemplate.update("INSERT INTO guests(first_name,last_name)" +
                 "VALUES(?,?)", firstName, lastName);
     }
+
+
 }

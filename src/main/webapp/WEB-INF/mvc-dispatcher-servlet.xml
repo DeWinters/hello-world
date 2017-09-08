@@ -16,6 +16,8 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
+    <!--GLOBAL GUESTLOG IMPORT <bean id="guestLog" class="com.springapp.mvc.GuestLog" /> -->
+
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
