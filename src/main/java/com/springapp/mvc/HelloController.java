@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.xml.ws.ResponseWrapper;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.text.*;
@@ -47,7 +48,7 @@ public class HelloController {
     }
 
 
-    @RequestMapping(value = "/insertGuest", method = RequestMethod.GET)
+    @RequestMapping(value = "/insertGuest", method = RequestMethod.POST)
     public String insertNewGuest(ModelMap model,
                                  @RequestParam("firstname") String firstName,
                                  @RequestParam("lastname") String lastName) {
@@ -62,10 +63,21 @@ public class HelloController {
     public String getLogAsJSON() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
         List<Client> guestLog = jdbcTemplate.query("SELECT * FROM guests", new ClientMapper());
-
         String gsonString = gson.toJson(guestLog);
+
+        /** JSON TO ARRAY: Client jsonToArray[] = gson.fromJson(gsonString, Client[].class); **/
         return gsonString;
     }
+
+
+    @RequestMapping(value = "/newGuest", method = RequestMethod.POST)
+    @ResponseBody
+    public void insertAGuest(@RequestParam(value="firstName") String firstName ,
+                             @RequestParam(value="lastName") String lastName){
+        dao.insertNew(firstName, lastName);
+    }
+
+
 }
 
 
