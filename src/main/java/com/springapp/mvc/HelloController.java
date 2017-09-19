@@ -1,13 +1,7 @@
 package com.springapp.mvc;
 
-import com.google.gson.*;
-import com.google.gson.annotations.JsonAdapter;
-import com.thetransactioncompany.cors.CORSConfiguration;
-import com.thetransactioncompany.cors.CORSFilter;
-import jdk.nashorn.internal.parser.JSONParser;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Controller;
@@ -15,15 +9,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.xml.ws.ResponseWrapper;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.text.*;
-import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 //nope import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -35,8 +21,16 @@ public class HelloController {
     @Autowired
     private DriverManagerDataSource dataSauce;
 
+    public void setDataSauce(DriverManagerDataSource dataSauce) {
+        this.dataSauce = dataSauce;
+    }
+
     @Autowired
     private DAO dao;
+
+    public void setDao(DAO dao) {
+        this.dao = dao;
+    }
 
     Gson gson = new Gson();
 
@@ -61,20 +55,29 @@ public class HelloController {
     @RequestMapping(value = "/gimmeJson", method = RequestMethod.GET)
     @ResponseBody
     public String getLogAsJSON() {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSauce);
-        List<Client> guestLog = jdbcTemplate.query("SELECT * FROM guests", new ClientMapper());
-        String gsonString = gson.toJson(guestLog);
-
+        dao.bullshit("fdas","fdas");
         /** JSON TO ARRAY: Client jsonToArray[] = gson.fromJson(gsonString, Client[].class); **/
-        return gsonString;
+        return dao.getGuestLog();
     }
 
 
     @RequestMapping(value = "/newGuest", method = RequestMethod.POST)
     @ResponseBody
-    public void insertAGuest(@RequestParam(value="firstName") String firstName ,
-                             @RequestParam(value="lastName") String lastName){
-        dao.insertNew(firstName, lastName);
+    public void insertAGuest(@RequestBody Client client){
+        dao.insertNew(client.getFirstName(), client.getLastName());
+    }
+
+    @RequestMapping(value = "/updateGuest", method = RequestMethod.POST)
+    @ResponseBody
+    public void updateGuest(@RequestBody Client client){
+        dao.updateGuest(client.getId(), client.getFirstName(), client.getLastName());
+    }
+
+    @RequestMapping(value = "/deleteById", method = RequestMethod.POST)
+    @ResponseBody
+    public void deleteGuestById(@RequestBody Client client){
+        //long fake = Long.parseLong(id);
+        dao.deleteGuest(client.getId());
     }
 
 

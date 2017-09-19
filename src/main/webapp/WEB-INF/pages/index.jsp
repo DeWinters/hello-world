@@ -48,6 +48,16 @@
         </div>
 
         <div>
+            <div class="header">
+                <h1>Delete</h1>
+                <form action="/deleteById" method="post">
+                    GuestID: <input type="text" name="id" class="bubble"><br>
+                    <input type="submit" value="Login" class="bubble">
+                </form>
+            </div>
+        </div>
+
+        <div>
             ${jsonlist}
         </div>
     </div>
