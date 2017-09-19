@@ -37,7 +37,6 @@ public class HelloController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String printWelcome(ModelMap model, HttpServletRequest request) {
         model.addAttribute("guestlist", dao.getLogAsString());
-        model.addAttribute("jsonlist", getLogAsJSON());
         return "index";
     }
 
@@ -52,32 +51,8 @@ public class HelloController {
     }
 
 
-    @RequestMapping(value = "/gimmeJson", method = RequestMethod.GET)
-    @ResponseBody
     public String getLogAsJSON() {
-        dao.bullshit("fdas","fdas");
-        /** JSON TO ARRAY: Client jsonToArray[] = gson.fromJson(gsonString, Client[].class); **/
         return dao.getGuestLog();
-    }
-
-
-    @RequestMapping(value = "/newGuest", method = RequestMethod.POST)
-    @ResponseBody
-    public void insertAGuest(@RequestBody Client client){
-        dao.insertNew(client.getFirstName(), client.getLastName());
-    }
-
-    @RequestMapping(value = "/updateGuest", method = RequestMethod.POST)
-    @ResponseBody
-    public void updateGuest(@RequestBody Client client){
-        dao.updateGuest(client.getId(), client.getFirstName(), client.getLastName());
-    }
-
-    @RequestMapping(value = "/deleteById", method = RequestMethod.POST)
-    @ResponseBody
-    public void deleteGuestById(@RequestBody Client client){
-        //long fake = Long.parseLong(id);
-        dao.deleteGuest(client.getId());
     }
 
 

@@ -47,9 +47,12 @@
             </div>
         </div>
 
-        <div>
+        <div id="deleteframe">
             <div class="header">
                 <h1>Delete</h1>
+            </div>
+
+            <div>
                 <form action="/deleteById" method="post">
                     GuestID: <input type="text" name="id" class="bubble"><br>
                     <input type="submit" value="Login" class="bubble">

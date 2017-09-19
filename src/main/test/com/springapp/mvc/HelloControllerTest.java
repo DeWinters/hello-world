@@ -37,7 +37,7 @@ public class HelloControllerTest {
         String jsonReturned = helloController.getLogAsJSON();
 
         Mockito.verify(mockDao).getGuestLog();
-        Mockito.verify(mockDao).bullshit(eq("ffffffdas"),eq("fdas"));
+        Mockito.verify(mockDao).bullshit(eq("fdas"),eq("fdas"));
         Mockito.verifyNoMoreInteractions(mockDao);
     }
 }

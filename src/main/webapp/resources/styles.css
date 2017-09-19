@@ -30,6 +30,14 @@ background-color: blue;
     border: 1px solid black;
 }
 
+#deleteframe{
+    width: 600px;
+    margin: 2px;
+    padding: 5px;
+    background-color: lightblue;
+    border: 1px solid black;
+}
+
 .header {
     text-align: center;
     color: blue;
