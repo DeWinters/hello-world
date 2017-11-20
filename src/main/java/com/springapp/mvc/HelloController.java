@@ -34,6 +34,7 @@ public class HelloController {
 
     Gson gson = new Gson();
 
+    /*
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String printWelcome(ModelMap model, HttpServletRequest request) {
         model.addAttribute("guestlist", dao.getLogAsString());
@@ -54,6 +55,7 @@ public class HelloController {
     public String getLogAsJSON() {
         return dao.getGuestLog();
     }
+    */
 
 
 }

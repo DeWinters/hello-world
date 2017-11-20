@@ -6,6 +6,7 @@
     <version>1.0-SNAPSHOT</version>
     <name>winters</name>
 
+
     <properties>
         <spring.version>4.1.1.RELEASE</spring.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> <!-- enable foreign language characters (utf-8)-->
@@ -17,6 +18,7 @@
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
         </dependency>
+
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -49,18 +51,19 @@
             <version>1.9.5</version>
         </dependency>
 
-
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
             <version>2.1</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
@@ -94,11 +97,19 @@
             <artifactId>cors-filter</artifactId>
             <version>2.1.2</version>
         </dependency>
+
         <dependency>
             <groupId>com.thetransactioncompany</groupId>
             <artifactId>java-property-utils</artifactId>
             <version>1.9.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.12</version>
+        </dependency>
+
 
     </dependencies>
 

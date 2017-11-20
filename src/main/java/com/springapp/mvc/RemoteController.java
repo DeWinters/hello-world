@@ -8,9 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Created by Administrator on 19/09/2017.
- */
+import org.apache.log4j.Logger;
+
 @RestController
 public class RemoteController {
     @Autowired
@@ -27,33 +26,86 @@ public class RemoteController {
         this.dao = dao;
     }
 
-    Gson gson = new Gson();
-
-    @RequestMapping(value = "/gimmeJson", method = RequestMethod.GET)
+    /******************************************************************************************** Invoice ************/
+    @RequestMapping(value = "/getInvoiceList", method = RequestMethod.GET)
     @ResponseBody
-    public String getLogAsJSON() {
-        return dao.getGuestLog();
+    public String getInvoiceListAsJSON() {
+        return dao.getInvoiceList();
     }
 
-    @RequestMapping(value = "/newGuest", method = RequestMethod.POST)
+    @RequestMapping(value = "/getActivesList", method = RequestMethod.GET)
     @ResponseBody
-    public void insertAGuest(@RequestBody Client client){
-        dao.insertNew(client.getFirstName(), client.getLastName());
+    public String getActivesListAsJSON() {
+        return dao.getActivesList();
     }
 
-    @RequestMapping(value = "/updateGuest", method = RequestMethod.POST)
+    @RequestMapping(value = "/newInvoice", method = RequestMethod.POST)
     @ResponseBody
-    public void updateGuest(@RequestBody Client client){
-        dao.updateGuest(client.getId(), client.getFirstName(), client.getLastName());
+    public void insertInvoice(@RequestBody Invoice invoice){
+        dao.newInvoice(invoice);
     }
 
-    @RequestMapping(value = "/deleteById", method = RequestMethod.POST)
+    /** UNTESTED **/
+    @RequestMapping(value = "/updateInvoice", method = RequestMethod.POST)
     @ResponseBody
-    public void deleteGuestById(@RequestBody Client client){
-        //long fake = Long.parseLong(id);
-        dao.deleteGuest(client.getId());
+    public void editInvoice(@RequestBody Invoice invoice){
+        dao.updateInvoice(invoice);
+    }
+    /** UNTESTED **/
+    @RequestMapping(value = "/findInvoice", method = RequestMethod.GET)
+    @ResponseBody
+    public String findInvoiceById(@RequestBody Invoice invoice){
+        if(invoice.getId() >0){ return dao.getInvoiceById(invoice.getId()); }
+        else if(!invoice.getInvoiceNum().equalsIgnoreCase("")){ return dao.getInvoiceByNum(invoice.getInvoiceNum()); }
+        else return null;
+    }
+    /** UNTESTED **/
+    @RequestMapping(value = "/deleteInvoiceById", method = RequestMethod.POST)
+    @ResponseBody
+    public void deleteInvoiceById(@RequestBody Invoice invoice){
+        dao.deleteInvoice(invoice.getId());
     }
 
 
+    /******************************************************************************************** Client *************/
+    @RequestMapping(value = "/getClientList", method = RequestMethod.GET)
+    @ResponseBody
+    public String getClientList() {
+        return dao.getClientList();
+    }
+    /** UNTESTED **/
+    @RequestMapping(value = "/newClient", method = RequestMethod.POST)
+    @ResponseBody
+    public void insertClient(@RequestBody Client client){
+        dao.newClient(client);
+    }
+
+
+    /******************************************************************************************** Driver *************/
+    @RequestMapping(value = "/getDriverList", method = RequestMethod.GET)
+    @ResponseBody
+    public String getDriverList() {
+        return dao.getDriverList();
+    }
+    /** UNTESTED **/
+    @RequestMapping(value = "/newDriver", method = RequestMethod.POST)
+    @ResponseBody
+    public void insertDriver(@RequestBody Driver driver){
+        dao.newDriver(driver);
+    }
+
+
+    /******************************************************************************************** Location ***********/
+    @RequestMapping(value = "/getLocationList", method = RequestMethod.GET)
+    @ResponseBody
+    public String getLocationList() {
+        return dao.getLocationList();
+    }
+    /** UNTESTED **/
+    @RequestMapping(value = "/newLocation", method = RequestMethod.POST)
+    @ResponseBody
+    public void insertLocation(@RequestBody Location location){
+        dao.newLocation(location);
+    }
 }
 /** JSON TO ARRAY: Client jsonToArray[] = gson.fromJson(gsonString, Client[].class); **/
